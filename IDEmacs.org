@@ -1,17 +1,11 @@
 * Header 
-**Welcome To IDEmacs this custom configuration was created by Jachin Minyard in attempts to better understand Emacs, emacs-lisp and create an environment more along the lines of other IDE such as VS Code. Different aspects of the configuration are broken up into smaller sections below. Alot of the basis for my understanding of this material is due in part to the documentation but also the wonderful people over at !SystemCrafters! More features will continue to be added as I learn more about this enviroment. I hope you enjoy looking at my journy to master the Emacs environment**
-
-For those new to org mode this is the header options and can be used to set different global settings about the document. Here we give it a title set all Emacs-lisp code blocks to write to the  ~/.emacs file.
-#+title IDEmacs
-remove the line Emacs-lisp :tangle ~/.emacs to keep this file from writing over a pre existing  ~/.emacs if you have your own config already set up.
-#+PROPERTY: header-args:emacs-lisp :tangle ~/.emacs
+*Welcome To IDEmacs this custom configuration was created by Jachin Minyard in attempts to better understand Emacs, emacs-lisp and create an environment more along the lines of other IDE such as VS Code. Different aspects of the configuration are broken up into smaller sections below. Alot of the basis for my understanding of this material is due in part to the documentation but also the wonderful people over at !SystemCrafters! More features will continue to be added as I learn more about this enviroment. I hope you enjoy looking at my journy to master the Emacs environment*
 
 
 * Package Management
 Welcome to your first stop along the path to mastering Emacs configuration. There are many useful settings and configurations that come with Emacs by default, but in order to get the most out of it you should set up the package manager to make installing packages easier. The code in the following section seeks to do just that.
 
 ** Enable Packages
-Description: 
 The following code segment enables package then adds several package directories to the package archives. This segment gives us access to packages from the following sites:
 
 1. melpa
@@ -30,8 +24,7 @@ Code:
 #+end_src
 
 
-** Initialize a New Folder 
-Description:
+** Initialize a New File 
 The following segment is used to help initialize a new Emacs config file if none exist and no packages have been imported.
 
 Code:
@@ -42,7 +35,6 @@ Code:
 
 
 ** Use-Package
-Description:
 The following code segment is important as it allows for an easy way to configure packages you install by using the function *(use-package name)*. for more infromation on click here [[https://github.com/jwiegley/use-package/blob/master/README.md][(use-package)]].
 
 *(setq use-package-always-ensure t)* is the equilivant to writing:
@@ -63,7 +55,6 @@ Code:
 Welcome to the UI Config section. In this section you will find various packages and settings to alter the overall appearance of Emacs. This ranges from cleaning up the basic GUI window. To Changing the fonts and color schemes this is where you will find it.
 
 ** Disable Start Up Message
-Description: 
 The start up message that Emacs displays can become very clutersome and can be better to just turn off all together. set the following value to 'nil' of you want to see the message 't' to turn it off.
 
 Code:
@@ -77,7 +68,6 @@ Code:
 The code provided below is used to set the opening window of the GUI
 Along with the font and size of the font.
 *** GUI Dimensions
-Description:
 By default a lot of systems will launch Emacs in this tiny window and you have to resize it every time. this setting can configure the size of the starting window to be something more manageable. we are going to start with the option to start all frames that get opened infull screen mode for now. 
 
 - Notes:
@@ -106,8 +96,7 @@ changinf the 'initial-frame-alist -> 'default-frame-alist, you can change if jus
 #+end_src
 
 *** Text/Font
-Description:
-Code Will Set the Font and the font size. most people by default are used to font sizes like 12.0 13.0. this function takes font height as the size you want lets say 12.0 and accepts the paramater 12 * 100 = 120. Also keep in mind you may get an error when trying to set up the fonts as they might not be installed on your system. If that is the case just search the name of the font and how to install it. 
+Code Will Set the Font and the font size. most people by default are used to font sizes like 12.0 13.0. this function takes font height as the size you want lets say 12.0 and accepts the parameter 12 * 100 = 120. Also keep in mind you may get an error when trying to set up the fonts as they might not be installed on your system. If that is the case just search the name of the font and how to install it. 
 
 Code:
 #+begin_src emacs-lisp
@@ -119,10 +108,10 @@ Code:
 #+end_src
 
 *** Line Numbers
-Description:
 In this section we will look at the line numbers on the left hand side of the screen and how to set it up globally and exclude modes where you do not what line numbers to appear.
+
 **** Global Line Numbers
-Description: 
+
 This code is increadibly simple. Enables line Numbers for all modes. Tho there are some modes where personaly I think the line numbers take away from the visual astetic of the mode *ie. org-mode*. So in the following section we will look at setting up an exclusion list tho there are some other implamentations that can be done here to avoid an exclusion list altogether.
 
 Code:
@@ -143,7 +132,6 @@ If you only want to turn line numbers on for spefic modes the following code wil
 #+end_src
 
 **** Exclusion List for Line Numbers
-Description: 
 This is the exclusion list if you chose to go with (global-display-line-numbers-mode) in the above section. If this is the case then you may find that some of the modes you come to work in do not need to have line numbers enabled. Personally I do not like the look of line numbers when I am working on my org documents so it has been turned off for that.
 
 Code: 
@@ -161,7 +149,6 @@ Code:
 Welcome to Bar-Modes. This is one of the most basic features you can modify in the Emacs. All these options do are add additional GUI type features to the frames such as a scroll bar, menu bar, and tool bar. all features most GUI's have. Emacs gives you the ability turn these features on or off to give it a more sleek look. 
 
 *** Tool-bar-mode
-Description:
 If you are new to Emacs and are not familiar with the basic key binds it is best to leave this one on. Enables the tool bar at the top of the GUI.. contains things like save, open, cut, paste...
 
 Code:
@@ -171,7 +158,6 @@ Code:
 #+end_src
 
 *** Menu-bar-mode
-Description:
 If you are new to Emacs and are not familiar with the basic key binds it is best to leave this one on. Enables the menu  bar at the top of the GUI.. contains things like Files, Tools, View,
 
 Code:
@@ -181,7 +167,6 @@ Code:
 #+end_src
 
 *** Scroll-bar-mode
-Description:
 This is one that is purely preference I turn the scroll bar off as it makes the screen less cluttered but leaving it on like everything in this document is purely optional based on the  users preference.
 
 Code:
@@ -207,11 +192,6 @@ This is our first look at an expanded version of the **(use-package)** function.
   :custom
   ((doom-modeline-height 40)))
 #+end_src
-
-Functions:
-**(doom-modeline-mode Bool)**
-**((doom-modeline-height VAL))**
-VAL: is an numerical value to determine the height of the mode line. note that font size will have an effect on this setting.
 
 *** Doom Themes
 Description:
