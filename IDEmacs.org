@@ -1,21 +1,15 @@
-* DONE Header 
-CLOSED: [2023-11-09 Thu 12:42]
-:LOGBOOK:
-- State "DONE"       from "NEXT"       [2023-11-09 Thu 12:42]
-:END:
+* Header 
+**Welcome To IDEmacs this custom configuration was created by Jachin Minyard in attempts to better understand Emacs, emacs-lisp and create an environment more along the lines of other IDE such as VS Code. Different aspects of the configuration are broken up into smaller sections below. Alot of the basis for my understanding of this material is due in part to the documentation but also the wonderful people over at !SystemCrafters! More features will continue to be added as I learn more about this enviroment. I hope you enjoy looking at my journy to master the Emacs environment**
+
 For those new to org mode this is the header options and can be used to set different global settings about the document. Here we give it a title set all Emacs-lisp code blocks to write to the  ~/.emacs file.
 #+title IDEmacs
-_remove the line Emacs-lisp :tangle ~/.emacs to keep this file from writing over a pre existing  ~/.emacs if you have your own config already set up.
+remove the line Emacs-lisp :tangle ~/.emacs to keep this file from writing over a pre existing  ~/.emacs if you have your own config already set up.
 #+PROPERTY: header-args:emacs-lisp :tangle ~/.emacs
-**Welcome To IDEmacs this custom configuration was created by Jachin Minyard in attempts to better understand Emacs, emacs-lisp and create an environment more along the lines of other IDE such as VS Code. Different aspects of the configuration are broken up into smaller sections below. **
 
 
-* DONE Package Management
-CLOSED: [2023-11-09 Thu 12:02]
-:LOGBOOK:
-- State "DONE"       from "NEXT"       [2023-11-09 Thu 12:02]
-:END:
-Welcome to your first stop along the path to mastering Emacs configuration. There are many useful settings and configurations that come with Emacs by default, but in order to get the most out of it. Setting up the package manager is wise to make installing packages easier. The code in the following section seeks to do just that.
+* Package Management
+Welcome to your first stop along the path to mastering Emacs configuration. There are many useful settings and configurations that come with Emacs by default, but in order to get the most out of it you should set up the package manager to make installing packages easier. The code in the following section seeks to do just that.
+
 ** Enable Packages
 Description: 
 The following code segment enables package then adds several package directories to the package archives. This segment gives us access to packages from the following sites:
@@ -26,26 +20,15 @@ The following code segment enables package then adds several package directories
 
 Code:
 #+begin_src emacs-lisp
-  ;;
   (require 'package)
 
-  (add-to-list 'package-archives
-               '(("melpa" . "https://melpa.org/packages/")
-                 ("org" . "https://orgmode.org/elpa/")
-                 ("elpa" . "https://elpa.gnu.org/packages/")))
+  (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+                           ("org" . "https://orgmode.org/elpa/")
+                           ("melpa" . "http://melpa.org/packages/")))
 
   (package-initialize)
 #+end_src
 
-Functions:
-**(require 'string)**
-'string: Name of the package you want to use.dd
-
-**(add-to-list 'destination-list 'list-to-add)**
-'destination-list: the location of where the data will be stored
-'list-to-add: a list to be added to destination-list
-
-**(package-initialize)**
 
 ** Initialize a New Folder 
 Description:
@@ -57,19 +40,17 @@ Code:
   (package-refresh-contents))
 #+end_src
 
-Functions:
-**(package-refresh-contents)**
-reloads the package-archive-contents with any packages not loaded from the web
 
 ** Use-Package
 Description:
-The following code segment is important as it allows for an easy way to configure packages you install by using the function **(use-package name)**.
-**(setq use-package-always-ensure t)** is the equilivant to writing:
+The following code segment is important as it allows for an easy way to configure packages you install by using the function *(use-package name)*. for more infromation on click here [[https://github.com/jwiegley/use-package/blob/master/README.md][(use-package)]].
 
-**(use-package name
-       :ensure t)**
+*(setq use-package-always-ensure t)* is the equilivant to writing:
 
-for all instances of **(use-package)**.
+*(use-package name
+       :ensure t)*
+
+for all instances of *(use-package)*.
 
 Code:
 #+begin_src emacs-lisp
@@ -77,79 +58,56 @@ Code:
 (setq use-package-always-ensure t)
 #+end_src
 
-Functions:
-**(use-package-always-ensure bool)**
-bool: (t or nil) sets **(use-package)** to always ensure packages.
 
-** Auto Update Packages 
-Description:
-The following section is optional comment out the following code if you do not want your packages updating automatically. This uses the package **auto-package-update**.
-
-Code:
-#+begin_src emacs-lisp
-;;(use-package auto-package-update
-  ;;:custom
-  ;;(auto-package-update-interval 7)
-  ;;(auto-package-update-prompt-before-update t)
-  ;;(auto-package-update-hide-results t)
-  ;;:config
-  ;;(auto-package-update-maybe)
-  ;;(auto-package-update-at-time "09:00"))
-#+end_src
-
-Functions:
-**(auto-package-update-interval VALUE)**
-VALUE: an integer to represent the number of days between updates 
-
-**(auto-package-update-prompt-before-update BOOL)**
-
-**(auto-package-update-hide-results BOOL)** 
-
-**(auto-package-update-maybe)**
-Checks for updates at start up if any are pending.
-
-**(auto-package-update-at-time "String")**
-String: a string to represent a time format the clock is in 24hr mode eq "9:00" is 9 am "19:00" is 7pm.
-
-
-* DONE UI Config
-CLOSED: [2023-11-09 Thu 12:02]
-:LOGBOOK:
-- State "DONE"       from "NEXT"       [2023-11-09 Thu 12:02]
-:END:
+* UI Config
 Welcome to the UI Config section. In this section you will find various packages and settings to alter the overall appearance of Emacs. This ranges from cleaning up the basic GUI window. To Changing the fonts and color schemes this is where you will find it.
+
 ** Disable Start Up Message
 Description: 
-Disables the Start up message in the scratch buffer.
+The start up message that Emacs displays can become very clutersome and can be better to just turn off all together. set the following value to 'nil' of you want to see the message 't' to turn it off.
 
 Code:
 #+begin_src emacs-lisp
 ;;Disables the startup message
 (setq inhibit-startup-message t)
 #+end_src
+
+
 ** GUI Config
 The code provided below is used to set the opening window of the GUI
 Along with the font and size of the font.
 *** GUI Dimensions
 Description:
-Determines if the selected frame is opened in a Window(GUI) and sets the height and width according along with font size.
+By default a lot of systems will launch Emacs in this tiny window and you have to resize it every time. this setting can configure the size of the starting window to be something more manageable. we are going to start with the option to start all frames that get opened infull screen mode for now. 
+
+- Notes:
+  - Frames are the same things as a window if you are unfimilar with some of this teminology. 
+  - you may need to check your .emacs file to make sure that the change is made when swapping between the settigs.
 
 Code:
+*(if (window-system) (set-frame-size (desired frame) width height))*
+Width is measured in chars and height is measured in lines.
+*(add-to-list 'initial-frame-alist '(fullscreen . maximized))*
+changinf the 'initial-frame-alist -> 'default-frame-alist, you can change if just the initial frame opens in fullscreen or if all frames open in full screen.
 #+begin_src emacs-lisp
-;; Sets the size of the frame on launch
-(if (window-system) (set-frame-size (selected-frame) 124 40))
-#+end_src
+;; Allows you to customize the size and width to great precision and which frame to modify.
+;; (selected-frame) can be changed to the desired frame.
+;; the two parameters after the frame selection are height and width respectivly
+;; width is in characters and height is in lines.  
+;;(if (window-system) (set-frame-size (selected-frame) 124 40))
 
-Functions:
-**(set-frame-size frame width height)**
-frame: The frame you wish to modify.
-width: The width of the frame in chars
-height: The height of the frame in lines
+;; If you dont care about tweaking the height and width the following commands will work just fine
+;; uncomment this linestart the initial frame maximized
+;;(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+
+;; uncomment this line to start every frame maximized
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
+
+#+end_src
 
 *** Text/Font
 Description:
-Code Will Set the Font and the font size.
-The font Size we know is size/100. 140 = 14.0...
+Code Will Set the Font and the font size. most people by default are used to font sizes like 12.0 13.0. this function takes font height as the size you want lets say 12.0 and accepts the paramater 12 * 100 = 120. Also keep in mind you may get an error when trying to set up the fonts as they might not be installed on your system. If that is the case just search the name of the font and how to install it. 
 
 Code:
 #+begin_src emacs-lisp
@@ -160,32 +118,37 @@ Code:
 (set-face-attribute 'variable-pitch nil :font "Cantarell" :height 170 :weight 'regular)
 #+end_src
 
-Functions:
-**(set-face-attribute 'foo bool :Modifier value ...)**
-'foo bool: 
-modifier: The attribute to set eg. height, weight...
-value: a matching value for a modifier eq. :height 100
-
 *** Line Numbers
 Description:
 In this section we will look at the line numbers on the left hand side of the screen and how to set it up globally and exclude modes where you do not what line numbers to appear.
 **** Global Line Numbers
 Description: 
-Enables line Numbers for all modes.
+This code is increadibly simple. Enables line Numbers for all modes. Tho there are some modes where personaly I think the line numbers take away from the visual astetic of the mode *ie. org-mode*. So in the following section we will look at setting up an exclusion list tho there are some other implamentations that can be done here to avoid an exclusion list altogether.
 
 Code:
+This is the Global Line number code to turn the line numbers on everywhere.
 #+begin_src emacs-lisp
 ;;Enables Global line numbers on the left side of the screen
 (global-display-line-numbers-mode)
 #+end_src
 
+If you only want to turn line numbers on for spefic modes the following code will work better. This is just the reverse of what the code block for the exclusion block does and turns on line number mode for each of the following modes.
+#+begin_src emacs-lisp
+;; adds line numbers to the specified modes below. DO NOT USE IN CONJUNCTION WITH GLOBAL LINE MODE AND THE EXCLUSION LIST. pick one method or the other
+;;(dolist (mode '(c-mode-hook
+  ;;              c++-mode-hook
+  ;;              java-mode-hook
+  ;;              python-mode-hook))
+  ;;(add-hook mode (lambda () (display-line-numbers-mode 1))))
+#+end_src
+
 **** Exclusion List for Line Numbers
 Description: 
-Here we will show how to exclude modes from having line numbers. To add additional modes to the exclusion list 
+This is the exclusion list if you chose to go with (global-display-line-numbers-mode) in the above section. If this is the case then you may find that some of the modes you come to work in do not need to have line numbers enabled. Personally I do not like the look of line numbers when I am working on my org documents so it has been turned off for that.
+
 Code: 
-In this chunk of code for each mode in the list '() set display-line-number-mode to false.
 #+begin_src emacs-lisp
-;;Creates Exclusion list for the modes below add the ones you dont want line numbers on
+;;Creates Exclusion to remove certin modes from being effected by (global-display-line-numbers-mode)
 (dolist (mode '(org-mode-hook
                 term-mode-hook
                 shell-mode-hook
@@ -193,12 +156,13 @@ In this chunk of code for each mode in the list '() set display-line-number-mode
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 #+end_src
 
+
 ** Bar Modes
-Bar-modes are the modes that add additional GUI features to Emacs. Set the bool parameter to -1 for false, 1 for true.
+Welcome to Bar-Modes. This is one of the most basic features you can modify in the Emacs. All these options do are add additional GUI type features to the frames such as a scroll bar, menu bar, and tool bar. all features most GUI's have. Emacs gives you the ability turn these features on or off to give it a more sleek look. 
+
 *** Tool-bar-mode
 Description:
-Enables the tool bar at the top of the GUI 
-contains things like save, open, cut, paste...
+If you are new to Emacs and are not familiar with the basic key binds it is best to leave this one on. Enables the tool bar at the top of the GUI.. contains things like save, open, cut, paste...
 
 Code:
 #+begin_src emacs-lisp
@@ -206,14 +170,9 @@ Code:
 (tool-bar-mode -1)
 #+end_src
 
-Functions:
-(tool-bar-mode bool)
-bool: determines if the mode should be loaded
-
 *** Menu-bar-mode
 Description:
-Enables the menu at the top of the GUI
-contains things like file, tools, edit...
+If you are new to Emacs and are not familiar with the basic key binds it is best to leave this one on. Enables the menu  bar at the top of the GUI.. contains things like Files, Tools, View,
 
 Code:
 #+begin_src emacs-lisp
@@ -221,13 +180,9 @@ Code:
 (menu-bar-mode -1)
 #+end_src
 
-Functions:
-(menu-bar-mode bool)
-bool: determines if the mode should be loaded
-
 *** Scroll-bar-mode
 Description:
-Enables the scroll bar on the left of the GUI
+This is one that is purely preference I turn the scroll bar off as it makes the screen less cluttered but leaving it on like everything in this document is purely optional based on the  users preference.
 
 Code:
 #+begin_src emacs-lisp
@@ -235,13 +190,12 @@ Code:
 (scroll-bar-mode -1)
 #+end_src
 
-Functions:
-**(scroll-bar-mode bool)**
-bool: determines if the mode should be loaded
 
 ** Doom
+
 *** Doom ModeLine
 Description:
+[[https://github.com/seagle0128/doom-modeline][Doom Modeline]]
 Adds additional information to the Mode-Line and Provides and overhauled UI
 
 Code: 
@@ -261,6 +215,7 @@ VAL: is an numerical value to determine the height of the mode line. note that f
 
 *** Doom Themes
 Description:
+[[https://github.com/doomemacs/themes][Doom Themes]]
 Additional Color Schemes to add additional penalization to your config.
 
 Code:
@@ -269,23 +224,17 @@ Code:
 (use-package doom-themes)
 #+end_src
 
-** Color Themes
-Description:
-Set your color theme Below
 
-Functions:
-**(load-theme 'string bool)**
-string: name of the theme to load (preface with ')
-bool: (t or nil)
+** Color Themes
+Everyone's favorite part the color theme! Change out the string 'doom-rouge to the theme of your choice. a full list of themes are listed below.
 
 Code:
 #+begin_src emacs-lisp
 ;;Sets the color theme
-(load-theme 'tsdh-dark t)
+(load-theme 'doom-rouge t)
 #+end_src
 
 *** Default Themes
-Description: 
 Themes that are installed with base Emacs.
 
 **** Names
@@ -305,8 +254,7 @@ Themes that are installed with base Emacs.
 14. wombat
 
 *** Doom Themes    
-Description:
-These are additional themes added by the **(doom-themes)** package. Names of the themes listed below.
+These are additional themes added by the [[https://github.com/doomemacs/themes/tree/screenshots][doom-themes]] package. Names of the themes listed below. (click the link to see screen shots)
 
 **** Names
 1. doom-1337
@@ -385,8 +333,9 @@ These are additional themes added by the **(doom-themes)** package. Names of the
 74. doom-xcode
 75. doom-zenburn 
 
+
 ** Rainbow Delimiters
-Description:
+[[https://github.com/Fanael/rainbow-delimiters][Rainbow Delimiters]]
 The following package is more of a utility package up since it changes the way delimiters appear in programming modes I decided to include it here. Rainbow Delimiters makes it so that matching delimiters will have the same color to make it easier to find matching parenthesis.
 
 Code:
@@ -399,185 +348,190 @@ In this code block we get our first look at the **:hook** :header this allows yo
 #+end_src
 
 
-* NEXT Org Mode
-Welcome to Org Mode. This is one of the notable features about Emacs. While you can write org docs in other editors the full range of features is exclusive to Emacs. That being said lets dive into what org mode can do and the configuration required.
+* Org Mode
+Welcome to [[https://orgmode.org/][Org Mode]]. This is one of the notable features about Emacs. While you can write org docs in other editors the full range of features is exclusive to Emacs. That being said lets dive into what org mode can do and the configuration required.
+
+- This is where the code starts the become larger and more complicated in nature
+
 ** Font Configuration
-Frost up lets look at seating up the text to be more pleasing when working on an org doc.
+First up lets look at seating up the text to be more pleasing when working on an org doc.
 
 Code:
-The following code snippet translates the base bullet point ' - ' and translates it into a nicer looking symbol in this case '•'. It also modifies the size of the headings based on the level in which it appears and makes sure that any features that require a fixed-face font are set to fixed-face.
+The following code snippet translates the base bullet point ' - ' and translates it into a nicer looking symbol in this case '•'. It also modifies the size of the headings based on the level in which it appears and makes sure that any features that require a fixed-face font are set to fixed-face. 
 #+begin_src emacs-lisp
-(defun efs/org-font-setup ()
-  ;; Replace list hyphen with dot
-  (font-lock-add-keywords 'org-mode
-                          '(("^ *\\([-]\\) "
-                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+  (defun IDEmacs-font-setup ()
+    ;; Replace list hyphen with dot
+    (font-lock-add-keywords 'org-mode
+                            '(("^ *\\([-]\\) "
+                               (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 
-  ;; Set faces for heading levels
-  (dolist (face '((org-level-1 . 1.2)
-                  (org-level-2 . 1.1)
-                  (org-level-3 . 1.05)
-                  (org-level-4 . 1.0)
-                  (org-level-5 . 1.1)
-                  (org-level-6 . 1.1)
-                  (org-level-7 . 1.1)
-                  (org-level-8 . 1.1)))
-    (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
+    ;; Set faces for heading levels
+    ;;you can change the numerical value to change the size of the geading levels.
+    (dolist (face '((org-level-1 . 1.2)
+                    (org-level-2 . 1.1)
+                    (org-level-3 . 1.05)
+                    (org-level-4 . 1.0)
+                    (org-level-5 . 1.1)
+                    (org-level-6 . 1.1)
+                    (org-level-7 . 1.1)
+                    (org-level-8 . 1.1)))
+      (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
 
-  ;; Ensure that anything that should be fixed-pitch in Org files appears that way
-  (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
-  (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
-  (set-face-attribute 'org-table nil   :inherit '(shadow fixed-pitch))
-  (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
-  (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
-  (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
-  (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
+    ;; Ensure that anything that should be fixed-pitch in Org files appears that way
+    (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+    (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-table nil   :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+    (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+    (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
 #+end_src
+
+
+
 
 ** Org Main Config
-
+[[https://orgmode.org/manual/index.html][Org Mode Manual]] 
+This is the main body of the code to set up Org mode. I tried to break up the configurations where I could. The user defined function *(defun IDEmacs-org-mode-setup)*  is where I placed all hooks and minor modes that I wished to launch along side org-mode. This includes an auto complete and a spell check. All additional configurations have been broken down into the features that they modify and been placed in user defined functions to make modifying your set up easier 
 
 #+begin_src emacs-lisp
-(defun efs/org-mode-setup ()
-  (org-indent-mode)
-  (variable-pitch-mode 1)
-  (visual-line-mode 1))
+        (defun IDEmacs-org-mode-setup ()
+          (org-indent-mode)
+          (variable-pitch-mode 1)
+          (visual-line-mode 1)
+          (company-mode 1)
+          (flyspell-mode 1))
 
-;;Org-mode package and its built in configs
-(use-package org
-  :hook (org-mode . efs/org-mode-setup)
-  :config
-  (setq org-ellipsis " ▾")
-  
-  ;;Agenda modifications
-  (setq org-agenda-files
-	'("~/Documents/Projects/Code/Org-Mode/Schedule/Task.org"))
-  (setq org-deadline-warning-days 14)
-  (setq org-agenda-start-with-log-mode t)
-  (setq org-log-done 'time)
-  (setq org-log-into-drawer t)
-
-  ;;Sets custom keyWords
-  (setq org-todo-keywords
-	'((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!)")
-	  (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(v)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
-
-  ;;Creates a custom list of tags
-  (setq org-tag-alist
-	'((:startgroup)
-	  ;; Put mutually exclusive tags here
-	  (:endgroup)
-	  ("@errand" . ?E)
-	  ("@home" . ?H)
-	  ("@work" . ?W)
-	  ("agenda" . ?a)
-	  ("planning" . ?p)
-	  ("publish" . ?P)
-	  ("batch" . ?b)
-	  ("note" . ?n)
-	  ("idea" . ?i)))
-
-  ;;Allows you to move completed task from the task file to the archive file
-  (setq org-refile-targets
-	'(("Archive.org" :maxlevel . 1)
-	  ("Tasks.org" :maxlevel . 1)))
-  
-  ;; Save Org buffers after refiling!
-  (advice-add 'org-refile :after 'org-save-all-org-buffers)
-
-  ;; Configure custom agenda views
-  (setq org-agenda-custom-commands
-   '(("d" "Dashboard"
-     ((agenda "" ((org-deadline-warning-days 7)))
-      (todo "NEXT"
-        ((org-agenda-overriding-header "Next Tasks")))
-      (tags-todo "agenda/ACTIVE" ((org-agenda-overriding-header "Active Projects")))))
-
-    ("n" "Next Tasks"
-     ((todo "NEXT"
-        ((org-agenda-overriding-header "Next Tasks")))))
-
-    ("W" "Work Tasks" tags-todo "+work-email")
-    
-    ;; Low-effort next actions
-    ("e" tags-todo "+TODO=\"NEXT\"+Effort<15&+Effort>0"
-     ((org-agenda-overriding-header "Low Effort Tasks")
-      (org-agenda-max-todos 20)
-      (org-agenda-files org-agenda-files)))
-
-    ("w" "Workflow Status"
-     ((todo "WAIT"
-            ((org-agenda-overriding-header "Waiting on External")
-             (org-agenda-files org-agenda-files)))
-      (todo "REVIEW"
-            ((org-agenda-overriding-header "In Review")
-             (org-agenda-files org-agenda-files)))
-      (todo "PLAN"
-            ((org-agenda-overriding-header "In Planning")
-             (org-agenda-todo-list-sublevels nil)
-             (org-agenda-files org-agenda-files)))
-      (todo "BACKLOG"
-            ((org-agenda-overriding-header "Project Backlog")
-             (org-agenda-todo-list-sublevels nil)
-             (org-agenda-files org-agenda-files)))
-      (todo "READY"
-            ((org-agenda-overriding-header "Ready for Work")
-             (org-agenda-files org-agenda-files)))
-      (todo "ACTIVE"
-            ((org-agenda-overriding-header "Active Projects")
-             (org-agenda-files org-agenda-files)))
-      (todo "COMPLETED"
-            ((org-agenda-overriding-header "Completed Projects")
-             (org-agenda-files org-agenda-files)))
-      (todo "CANC"
-            ((org-agenda-overriding-header "Cancelled Projects")
-             (org-agenda-files org-agenda-files)))))))
-  
-  ;;Enables habit mode
-  (require 'org-habit)
-  (add-to-list 'org-modules 'org-habit)
-  (setq org-habit-graph-column 60)
-  
-  (setq org-capture-templates
-	`(("t" "Tasks / Projects")
-	  ("tt" "Task" entry (file+olp "~/Documents/Projects/Code/Org-Mode/Schedule/Task.org" "Inbox")
-           "* TODO %?\n  %U\n  %a\n  %i" :empty-lines 1)
-	  
-	  ("j" "Journal Entries")
-	  ("jj" "Journal" entry
-           (file+olp+datetree "~/Documents/Projects/Code/Org-Mode/Schedule/Journal.org")
-           "\n* %<%I:%M %p> - Journal :journal:\n\n%?\n\n"
-           ;; ,(dw/read-file-as-string "~/Notes/Templates/Daily.org")
-           :clock-in :clock-resume
-           :empty-lines 1)
-	  ("jm" "Meeting" entry
-           (file+olp+datetree "~/Documents/Projects/Code/Org-Mode/Schedule/Journal.org")
-           "* %<%I:%M %p> - %a :meetings:\n\n%?\n\n"
-           :clock-in :clock-resume
-           :empty-lines 1)
-
-	  ("w" "Workflows")
-	  ("we" "Checking Email" entry (file+olp+datetree "~/Documents/Projects/Code/Org-Mode/Schedule/Journal.org")
-           "* Checking Email :email:\n\n%?" :clock-in :clock-resume :empty-lines 1)
-	  
-	  ("m" "Metrics Capture")
-	  ("mw" "Weight" table-line (file+headline "~/Documents/Projects/Code/Org-Mode/Schedule/Weight.org" "Weight")
-	   "| %U | %^{Weight} | %^{Notes} |" :kill-buffer t)))
-  
-  (define-key global-map (kbd "C-c j")
-    (lambda () (interactive) (org-capture nil "jj")))
-
-  (define-key global-map (kbd "C-c t")
-    (lambda () (interactive) (org-capture nil "tt")))
-
-  (define-key global-map (kbd "C-c a")
-    (lambda () (interactive) (org-agenda-list "a")))
-  ;;Enables the user defined font function
-  (efs/org-font-setup))
+        ;;Org-mode package and its built in configs
+        (use-package org
+          :hook 
+          (org-mode . IDEmacs-org-mode-setup)
+          (org-mode . IDEmacs-org-babel-tangle-config)
+          :config
+          (setq org-ellipsis " ")
+          ;; User defined functions found below add to make the set up code look cleaner
+          (IDEmacs-org-agenda-setup)
+          (IDEmacs-org-custom-keywords)
+          (IDEMacs-org-habits)
+          (IDEmacs-org-task-refiling)
+          (IDEmacs-org-capture-templates)
+          (IDEmacs-font-setup))    
 #+end_src
 
-** Heading Bullets 
-Description: 
+*** Custom Keywords
+This User defined function sets up custom key word markers and tags that can be used through out org-mode and org-agenda.
+
+#+begin_src emacs-lisp
+(defun IDEmacs-org-custom-keywords ()
+      (setq org-todo-keywords
+            '((sequence "CURRENT(c)" " TODO(t)" "NEXT(n)" "|" "DONE(d!)")))
+
+      ;;Creates a custom list of tags
+      (setq org-tag-alist
+            '((:startgroup)
+              ;; Put mutually exclusive tags here
+              (:endgroup)
+              ("@errand" . ?E)
+              ("@home" . ?H)
+              ("@work" . ?W)
+              ("agenda" . ?a)
+              ("planning" . ?p)
+              ("publish" . ?P)
+              ("batch" . ?b)
+              ("note" . ?n)
+              ("idea" . ?i))))
+#+end_src
+
+*** Org Agenda 
+set up for or-agenda. in this section we set up the path to specified file  or files that org-agenda will pull from as well as modifying the look of the log and the time before a task will show up on the agenda. Under all of that is some code to set up additional 
+
+#+begin_src emacs-lisp
+(defun IDEmacs-org-agenda-setup ()
+      (setq org-agenda-files
+            '("~/Documents/Projects/Code/Org-Mode/Schedule/Task.org"))
+      (setq org-deadline-warning-days 7)
+      (setq org-agenda-start-with-log-mode t)
+      (setq org-log-done 'time)
+      (setq org-log-into-drawer t)
+
+      ;; Configure custom agenda views
+      (setq org-agenda-custom-commands
+            '(("d" "Dashboard"
+               ((agenda "" ((org-deadline-warning-days 7)))
+                (todo "NEXT"
+                      ((org-agenda-overriding-header "Next Tasks")))
+                (tags-todo "agenda/ACTIVE" ((org-agenda-overriding-header "Active Projects")))))
+	    
+              ("n" "Next Tasks"
+               ((todo "NEXT"
+                      ((org-agenda-overriding-header "Next Tasks")))))
+	    
+              ("W" "Work Tasks" tags-todo "+work-email")
+
+              ;; Low-effort next actions
+              ("e" tags-todo "+TODO=\"NEXT\"+Effort<15&+Effort>0"
+               ((org-agenda-overriding-header "Low Effort Tasks")
+                (org-agenda-max-todos 20)
+                (org-agenda-files org-agenda-files))))))
+#+end_src
+
+*** Habit mode
+Habit mode allows for additional task tracking 
+
+#+begin_src emacs-lisp
+  ;;Enables habit mode
+  (defun IDEMacs-org-habits ()
+    (require 'org-habit)
+    (add-to-list 'org-modules 'org-habit)
+    (setq org-habit-graph-column 60))
+#+end_src
+
+*** Refiling
+allows the moving of completed task to an archive file to keep your task folder clean emacs will then save after a refiling.
+
+#+begin_src emacs-lisp
+  ;;Allows you to move completed task from the task file to the archive file
+  (defun IDEmacs-org-task-refiling ()
+    (setq org-refile-targets
+          '(("Archive.org" :maxlevel . 1)
+            ("Tasks.org" :maxlevel . 1)))
+  
+    ;; Save Org buffers after refiling!
+    (advice-add 'org-refile :after 'org-save-all-org-buffers))
+
+#+end_src
+
+*** Capture templates
+allows the binding of keys to allow quick access of files to do things like add a task, take a note, or look at some other code at a glance.
+
+#+begin_src emacs-lisp
+  (defun IDEmacs-org-capture-templates ()
+    (setq org-capture-templates
+          `(("t" "Tasks / Projects")
+            ("tt" "Task" entry (file+olp "~/Documents/Projects/Code/Org-Mode/Schedule/Task.org" "Inbox")
+             "* TODO %?\n  %U\n  %a\n  %i" :empty-lines 1)
+
+            ("j" "Journal Entries")
+            ("jj" "Journal" entry
+             (file+olp+datetree "~/Documents/Projects/Code/Org-Mode/Schedule/Journal.org")
+             "\n* %<%I:%M %p> - Journal :journal:\n\n%?\n\n"
+             ;; ,(dw/read-file-as-string "~/Notes/Templates/Daily.org")
+             :clock-in :clock-resume
+             :empty-lines 1)
+            ("jm" "Meeting" entry
+             (file+olp+datetree "~/Documents/Projects/Code/Org-Mode/Schedule/Journal.org")
+             "* %<%I:%M %p> - %a :meetings:\n\n%?\n\n"
+             :clock-in :clock-resume
+             :empty-lines 1)
+
+            ("w" "Workflows")
+            ("we" "Checking Email" entry (file+olp+datetree "~/Documents/Projects/Code/Org-Mode/Schedule/Journal.org")
+             "* Checking Email :email:\n\n%?" :clock-in :clock-resume :empty-lines 1))))
+#+end_src
+
+
+
+** Heading Bullets  
 Having * ** *** **** in your headings can become rather busy to look at to fix this problem we can use the package org-bullets this gives each level a unique symbol which you can then modify to your liking.
 
 Code:
@@ -590,15 +544,23 @@ gets org-bullets and launches it anytime we enter org-mode. we then set the bull
   (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 #+end_src
 
+
+
+
 ** Center Org Mode Buffers
-Description: 
-Welcome to More formatting of text *YAY!*.  No for real tho in this section we have code that centers the org buffer on screen to make it closer to the program that shall not be name (_Microsoft Word_). 
+Welcome to More formatting of text *YAY!*.  No for real tho in this section we have code that centers the org buffer on screen to make it closer to other document editorrs most people are fimilar with. For more infromation on visual-fill-column click [[https://github.com/joostkremers/visual-fill-column][here]].
 
 Code:
 The following code block sets the size of the "margins", enables the centering of text, and enables column fill mode.
+*(setq visual-fill-column-width VALUE)*
+VALUE: set to an _number_ to change the width of the margins. I find the sweet spot for my devices is anywhere from 80-150. The Value is how many chars from the center you wish to start the text.
+ *(visual-fill-column-center-text t)*
+Should we center the test on the center column (_t or nil_)
+*(visual-fill-column-mode 1)*
+enables visual column-mode must set value to 1 _AND_ run in conjunction with *(visual-fill-column-center-text t)* to get text to center.
 #+begin_src emacs-lisp
   (defun efs/org-mode-visual-fill ()
-    (setq visual-fill-column-width 150
+    (setq visual-fill-column-width 100
           visual-fill-column-center-text t)
     (visual-fill-column-mode 1))
 
@@ -606,55 +568,62 @@ The following code block sets the size of the "margins", enables the centering o
     :hook (org-mode . efs/org-mode-visual-fill))
 #+end_src
 
-Function:
-*(setq visual-fill-column-width VALUE)*
-VALUE: set to an _number_ to change the width of the margins. I find the sweet spot for my devices is anywhere from 80-150. The Value is how many chars from the center you wish to start the text.
 
- *(visual-fill-column-center-text t)*
-Should we center the test on the center column (_t or nil_)
 
-*(visual-fill-column-mode 1)*
-enables visual column-mode must set value to 1 _AND_ run in conjunction with *(visual-fill-column-center-text t)* to get text to center.
 ** Configure Babel Languages
 Description:
-org-babel allows for some awesome functionality with code blocks in org docs such as being able to evaluate and display the results of the code or writing the code to a separate source file as you develop. such as this file does with your Emacs config file.
+[[https://orgmode.org/worg/org-contrib/babel/][org-babel]] allows for some awesome functionality with code blocks in org docs such as being able to evaluate and display the results of the code or writing the code to a separate source file as you develop. such as this file does with your Emacs config file.
 
 Code:
+For more infromation on babel languages click [[https://orgmode.org/worg/org-contrib/babel/languages/index.html][here]]
 #+begin_src emacs-lisp
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((emacs-lisp . t)
      (python . t)
-     (C . t)))
-
-  (push '("conf-unix" . conf-unix) org-src-lang-modes)
+     (C . t)
+     (java .t)))
 #+end_src
+
+
 
 ** Auto-tangle Configuration Files
 Description:
-The point of this code is to let this file Auto-tangle with the .Emacs file. What this means is that this file when you save, it should automatically out-put the code blocks to the file specified in the header at the top of this file.
+The point of this code is to let this file Auto-tangle with the .Emacs file. What this means is that this file when you save, it should automatically out-put the code blocks to the file specified in the header at the top of this file. For more infromation on tangle click [[https://orgmode.org/manual/Extracting-Source-Code.html][here]]
 
 Code:
 The following block defines a user function to run the tangle command after the buffer is saved. Every time we eval code to output it to the file named in the header of this file org-babel will ask if it is okay to eval this becomes a pain very quickly for large files so to turn this off we set *(org-confirm-babel-evaluate)* to nil.
 #+begin_src emacs-lisp
   ;; Automatically tangle our Emacs.org config file when we save it
-  (defun efs/org-babel-tangle-config ()
+  (defun IDEmacs-org-babel-tangle-config ()
     (when (string-equal (buffer-file-name)
-                        (expand-file-name "~/Documents/Projects/Code/Org-Mode/EmacsConfig/IDEmacs.org"))
+    (expand-file-name "~/Documents/Projects/Code/Org-Mode/IDEmacs/IDEmacs.org"))
       ;; Dynamic scoping to the rescue
       (let ((org-confirm-babel-evaluate nil))
         (org-babel-tangle))))
 
-  (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
+  (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'IDEmacs-org-babel-tangle-config)))
 #+end_src
 
 
-* DONE Which Key
-CLOSED: [2023-11-09 Thu 12:26]
-:LOGBOOK:
-- State "DONE"       from "NEXT"       [2023-11-09 Thu 12:26]
-:END:
-Which Key is a useful feature which displays a list of hot key compilations based on the prefix keys entered before.
+
+** Org Templates 
+Description:
+[[https://github.com/dangom/org-mode/blob/master/lisp/org-tempo.el][Org Tempo]] is a add on to org mode that extends the functionality of templates for code blocks. Below we set up a few templates to make inserting code blocks easier. to insert a code block for one of the languages below is simply type "<name" ie. "<el Tab" will insert a code block for emacs lisp.
+
+Code:
+#+begin_src emacs-lisp
+(require 'org-tempo)
+
+(add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+(add-to-list 'org-structure-template-alist '("py" . "src python"))
+(add-to-list 'org-structure-template-alist '("j" . "src java"))
+#+end_src
+
+
+* Which Key
+
 
 Code:
 #+begin_src emacs-lisp
@@ -667,19 +636,12 @@ Code:
     (setq which-key-idle-delay 1))
 #+end_src
 
-Functions: 
- **(setq which-key-idle-delay VALUE)**
-VALUE: numerical value to determine the delay time before Which-Key suggestions pop up. 
 
-
-* DONE Spelling and Error Checking
-CLOSED: [2023-11-09 Thu 12:29]
-:LOGBOOK:
-- State "DONE"       from "NEXT"       [2023-11-09 Thu 12:29]
-:END:
+* Spelling and Error Checking
 Welcome to our Spelling and Error Checking for code and text file. This section will have a few different packages to help people who are new to development and are not sure of what functions they can use or what exactly the name of a header file is don't worry I have been there too.
+
 ** Flycheck
-Welcome to Flycheck! Fly Check is an Emacs package for on the fly syntax checking. This package combined with others can help make Emacs feel more like a complete IDE.
+Welcome to [[https://www.flycheck.org/en/latest/][Flycheck]]! Flycheck is an Emacs package for on the fly syntax checking. This package combined with others can help make Emacs feel more like a complete IDE. Like any feature tho there maybe places where you prefer to have the feature turned off. to save you the hassle of having to turn off Flycheck manually just add the mode you wish to exclude to the Flycheck Exclusion List 
 
 Code:
 The following code block uses the package flycheck and the runs it anytime a program-mode is detected
@@ -688,37 +650,43 @@ The following code block uses the package flycheck and the runs it anytime a pro
     :hook
     (prog-mode . flycheck-mode))
 #+end_src
-*** Flycheck Execulsion List
- #+begin_src emacs-lisp
 
+*** Flycheck Exclusion List
+Hopefully if you have been reading through this document the following code block should be familiar to you. just any modes to the mode '( ) that you wish to exclude from running Flycheck. 
+#+begin_src emacs-lisp
+  (dolist (mode '(org-mode-hook
+                  term-mode-hook
+                  shell-mode-hook
+                  eshell-mode-hook
+                  emacs-lisp-mode-hook))
+    (add-hook mode (lambda () (flycheck-mode 0))))
 #+end_src
+
 
 ** Company
-Welcome to the Company section. Company is a package that allows for auto completions as you work. This is a hand tool to have on as a newbie to a language as it can prompt you with options to help you ember functions you might have other wise forgot.
+Welcome to  [[http://company-mode.github.io/][Company]] Mode. Company is a package that allows for auto completions as you work. This is a hand tool to have on as a newbie to a language as it can prompt you with options to help you ember functions you might have other wise forgot.
 *** Company Mode
-Discretion:
-This is the default company mode for Emacs. The basic set up is provided below.
+Company mode is a auto complete package for Emacs I use company mainly inside of programming languages to help me remember the full name of functions or other language specific features.
 
 Code:
+This code block enables company mode for all programming modes, org-mode as well,  and sets a few additional setting to make the experience of company more responsive.  *company-set-idle-delay* determines the time before the suggestions pop on screen. Where *company-minimum-prefix-length* determines the amount of chars you need before suggestions will appear on screen. 
 #+begin_src emacs-lisp
-(use-package company
-  :hook
-  (prog-mode . company-mode)
-  :config
-  (setq company-idle-delay 0.1)  
-  (setq company-minimum-prefix-length 1))
+  (use-package company
+    :hook
+    (prog-mode . company-mode)
+    (org-mode . company-mode)
+    :bind
+    (:map company-active-map
+          ("<tab>" . company-complete-selection))
+    (:map lsp-mode-map
+          ("<tab>" . company-indent-or-complete-common))
+    :config
+    (setq company-idle-delay 0.1)  
+    (setq company-minimum-prefix-length 1))
 #+end_src
 
-Functions:
-**(setq company-idle-delay VALUE)** 
-VALUE: a numerical value to determine the time before suggestions appear.
-
-**(setq company-minimum-prefix-length VALUE)** 
-VALUE: a numerical value to determine how many chars are needed to prompt a suggestion.
-
 *** Company Box Mode
-Description:
-Company-Box mode is an extension on Company-mode. This extension adds to addition functionality as well as cleans up the UI of the suggestions.
+ [[https://github.com/sebastiencs/company-box][Company-Box]] mode is an extension on Company-mode. This extension adds to addition functionality as well as cleans up the UI of the suggestions.
 
 Code:
 The hook in this code makes sure that if Emacs goes into Company-mode that company-box-mode will also launch.
@@ -728,23 +696,35 @@ The hook in this code makes sure that if Emacs goes into Company-mode that compa
   (company-mode . company-box-mode))
 #+end_src
 
-
-* TODO Development
-** Projectile
-Description:
-Projectile is a local project manager. I am still trying to learns its in and outs and will put more info here as I learn more.
+*** Company Exclusion List
+Hopefully if you have been reading through this document the following code block should be familiar to you. just any modes to the mode '( ) that you wish to exclude from running Company. I use company for most modes so for me this will be empty.
 
 Code:
-The following code block dosent do much to change the base functionality of projectile we change the key binds to access projectile commands, define which auto complete to use and provide a path to where we store our git repos.
+#+begin_src emacs-lisp
+  ;;(dolist (mode '())
+    ;;(add-hook mode (lambda () (company-mode 0))))
+#+end_src
+
+
+* Development
+
+** Projectile
+Description:
+[[https://docs.projectile.mx/projectile/index.html][Projectile]] is a local project manager. Determines if files in a directory are in a project such as directories that contain a .git or a .projectile. if it detects on of these files additional functionally becomes available such as replacing an instance of something across the whole project or jumping to files anywhere in the project directory.
+
+Code:
+The following code block dosent do much to change the base functionality of projectile we change the key binds to access projectile commands, define which auto complete to use and provide a path to where we store our git repositories. 
 #+begin_src emacs-lisp
 (use-package projectile
   :diminish
   projectile-mode
   :config
+  ;; Turns on global projectile
   (projectile-mode)
   :custom
   ((projectile-completion-system 'company))
   :bind-keymap
+  ;; Sets C-c p to open projectile commands
   ("C-c p" . projectile-command-map)
   :init
   ;; NOTE: Set this to the folder where you keep your Git repos!
@@ -752,6 +732,7 @@ The following code block dosent do much to change the base functionality of proj
     (setq projectile-project-search-path '("~/Documents/Projects/Code")))
   (setq projectile-switch-project-action #'projectile-dired))
 #+end_src
+
 
 ** Magit
 Description: 
@@ -764,9 +745,40 @@ Does not want to download
 #+end_src
 
 
-* TODO Lsp Mode
-Welcome to the lsp section. Lsp is a language server protocol that allows your editor access to a languages syntax such as java or c/c++. This package allows Emacs to have a more IDE like feel with error highlighting and info Boxes for different parts of the language.
-** Basic Lsp
+
+** Treemacs
+Treemacs is a file display system similar to something found in vs code. This is installed as a dependency of lsp-treemacs and all of its features I might put more effort into its customization later.
+
+Code:
+#+begin_src emacs-lisp
+  (use-package treemacs
+    :defer t
+    :init
+    (with-eval-after-load 'winum
+      (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+    :config
+    (treemacs-git-mode 'extended)
+    (setq treemacs-width 20)
+    (setq treemacs-indention 3)
+    :bind
+    (:map global-map
+          ("C-c q" . treemacs)))
+
+  (use-package treemacs-projectile
+    :after (treemacs projectile)
+    :ensure t)
+
+  (use-package treemacs-magit
+    :after (treemacs magit)
+    :ensure t)
+
+#+end_src
+
+
+* Lsp Mode
+Welcome to the [[https://github.com/emacs-lsp/lsp-mode][lsp]] section. Lsp is a language server protocol that allows your editor access to a languages syntax such as java or c/c++. This package allows Emacs to have a more IDE like feel with error highlighting and info Boxes for different parts of the language.
+
+** Lsp Mode
 Description: 
 The following section is the basic package for lsp-mode and some simple hook statements to help run it when a compatible program-mode is detected.
 
@@ -779,14 +791,12 @@ Code:
     (c-mode . lsp-mode)
     (c++-mode . lsp-mode)
     (python-mode . lsp-mode)
-    (lsp-mode . efs/lsp-mode-setup)
     :init
     (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
     :config
     (lsp-enable-which-key-integration t))
 #+end_src
 
-Functions:
 
 ** Lsp UI
 Description: 
@@ -796,4 +806,43 @@ Code:
 #+begin_src emacs-lisp
   (use-package lsp-ui)
 #+end_src
- 
+
+
+** Lsp  Treemacs
+
+#+begin_src emacs-lisp
+  (use-package lsp-treemacs
+  :after lsp
+  :config
+  (lsp-treemacs-sync-mode 1)
+  (setq lsp-treemacs-width 20)
+  :bind (:map global-map ("C-c t" . lsp-treemacs-symbols)))
+#+end_src
+
+
+* Key Bindings
+
+** General Key-Binds
+
+#+begin_src emacs-lisp
+;;This is a useful keybind that allows ESC to exit out of prompts.
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+#+end_src
+
+
+** Projectile Key-Binds
+
+
+** Org-Mode Key-Binds
+
+#+begin_src emacs-lisp
+  ;; Sets up Unique keybinds for Org-Mode  
+  (define-key global-map (kbd "C-c j")
+      (lambda () (interactive) (org-capture nil "jj")))
+  (define-key global-map (kbd "C-c l")
+      (lambda () (interactive) (org-capture nil "tt")))
+  (define-key global-map (kbd "C-c a")
+    (lambda () (interactive) (org-agenda-list "a")))
+#+end_src
+
+
