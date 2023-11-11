@@ -1,3 +1,4 @@
+#+PROPERTY: header-args:emacs-lisp :tangle ./init.el
 * Header 
 *Welcome To IDEmacs this custom configuration was created by Jachin Minyard in attempts to better understand Emacs, emacs-lisp and create an environment more along the lines of other IDE such as VS Code. Different aspects of the configuration are broken up into smaller sections below. Alot of the basis for my understanding of this material is due in part to the documentation but also the wonderful people over at !SystemCrafters! More features will continue to be added as I learn more about this enviroment. I hope you enjoy looking at my journy to master the Emacs environment*
 
@@ -27,7 +28,6 @@ Code:
 ** Initialize a New File 
 The following segment is used to help initialize a new Emacs config file if none exist and no packages have been imported.
 
-Code:
 #+begin_src emacs-lisp
 (unless package-archive-contents
   (package-refresh-contents))
@@ -44,7 +44,6 @@ The following code segment is important as it allows for an easy way to configur
 
 for all instances of *(use-package)*.
 
-Code:
 #+begin_src emacs-lisp
 (require 'use-package)
 (setq use-package-always-ensure t)
@@ -57,7 +56,6 @@ Welcome to the UI Config section. In this section you will find various packages
 ** Disable Start Up Message
 The start up message that Emacs displays can become very clutersome and can be better to just turn off all together. set the following value to 'nil' of you want to see the message 't' to turn it off.
 
-Code:
 #+begin_src emacs-lisp
 ;;Disables the startup message
 (setq inhibit-startup-message t)
@@ -74,7 +72,6 @@ By default a lot of systems will launch Emacs in this tiny window and you have t
   - Frames are the same things as a window if you are unfimilar with some of this teminology. 
   - you may need to check your .emacs file to make sure that the change is made when swapping between the settigs.
 
-Code:
 *(if (window-system) (set-frame-size (desired frame) width height))*
 Width is measured in chars and height is measured in lines.
 *(add-to-list 'initial-frame-alist '(fullscreen . maximized))*
@@ -98,7 +95,6 @@ changinf the 'initial-frame-alist -> 'default-frame-alist, you can change if jus
 *** Text/Font
 Code Will Set the Font and the font size. most people by default are used to font sizes like 12.0 13.0. this function takes font height as the size you want lets say 12.0 and accepts the parameter 12 * 100 = 120. Also keep in mind you may get an error when trying to set up the fonts as they might not be installed on your system. If that is the case just search the name of the font and how to install it. 
 
-Code:
 #+begin_src emacs-lisp
 (set-face-attribute 'default nil :height 150)
 ;; Set the fixed pitch face
@@ -114,7 +110,6 @@ In this section we will look at the line numbers on the left hand side of the sc
 
 This code is increadibly simple. Enables line Numbers for all modes. Tho there are some modes where personaly I think the line numbers take away from the visual astetic of the mode *ie. org-mode*. So in the following section we will look at setting up an exclusion list tho there are some other implamentations that can be done here to avoid an exclusion list altogether.
 
-Code:
 This is the Global Line number code to turn the line numbers on everywhere.
 #+begin_src emacs-lisp
 ;;Enables Global line numbers on the left side of the screen
@@ -134,7 +129,6 @@ If you only want to turn line numbers on for spefic modes the following code wil
 **** Exclusion List for Line Numbers
 This is the exclusion list if you chose to go with (global-display-line-numbers-mode) in the above section. If this is the case then you may find that some of the modes you come to work in do not need to have line numbers enabled. Personally I do not like the look of line numbers when I am working on my org documents so it has been turned off for that.
 
-Code: 
 #+begin_src emacs-lisp
 ;;Creates Exclusion to remove certin modes from being effected by (global-display-line-numbers-mode)
 (dolist (mode '(org-mode-hook
@@ -151,7 +145,6 @@ Welcome to Bar-Modes. This is one of the most basic features you can modify in t
 *** Tool-bar-mode
 If you are new to Emacs and are not familiar with the basic key binds it is best to leave this one on. Enables the tool bar at the top of the GUI.. contains things like save, open, cut, paste...
 
-Code:
 #+begin_src emacs-lisp
 ;; Disables tool bar
 (tool-bar-mode -1)
@@ -160,7 +153,6 @@ Code:
 *** Menu-bar-mode
 If you are new to Emacs and are not familiar with the basic key binds it is best to leave this one on. Enables the menu  bar at the top of the GUI.. contains things like Files, Tools, View,
 
-Code:
 #+begin_src emacs-lisp
 ;;Disables menu bar
 (menu-bar-mode -1)
@@ -169,7 +161,6 @@ Code:
 *** Scroll-bar-mode
 This is one that is purely preference I turn the scroll bar off as it makes the screen less cluttered but leaving it on like everything in this document is purely optional based on the  users preference.
 
-Code:
 #+begin_src emacs-lisp
 ;;Disables scroll Bar
 (scroll-bar-mode -1)
@@ -183,7 +174,6 @@ Description:
 [[https://github.com/seagle0128/doom-modeline][Doom Modeline]]
 Adds additional information to the Mode-Line and Provides and overhauled UI
 
-Code: 
 This is our first look at an expanded version of the **(use-package)** function. Things to note are the **:init** section any code there will be run on initial start up. we place the command to enable doom Modeline there so it starts every time we open Emacs. There are many :Headers another one is **:custom** here we can place custom commands to edit the functionality of the package. there is also **:config**.  
 #+begin_src emacs-lisp
 (use-package doom-modeline
@@ -198,7 +188,6 @@ Description:
 [[https://github.com/doomemacs/themes][Doom Themes]]
 Additional Color Schemes to add additional penalization to your config.
 
-Code:
 #+begin_src emacs-lisp
 ;;Installs the doom color themes
 (use-package doom-themes)
@@ -208,7 +197,6 @@ Code:
 ** Color Themes
 Everyone's favorite part the color theme! Change out the string 'doom-rouge to the theme of your choice. a full list of themes are listed below.
 
-Code:
 #+begin_src emacs-lisp
 ;;Sets the color theme
 (load-theme 'doom-rouge t)
@@ -318,7 +306,6 @@ These are additional themes added by the [[https://github.com/doomemacs/themes/t
 [[https://github.com/Fanael/rainbow-delimiters][Rainbow Delimiters]]
 The following package is more of a utility package up since it changes the way delimiters appear in programming modes I decided to include it here. Rainbow Delimiters makes it so that matching delimiters will have the same color to make it easier to find matching parenthesis.
 
-Code:
 In this code block we get our first look at the **:hook** :header this allows you to set launch conditions for different packages based on the loading of a different package. In this code block we have **(prog-mode . rainbow-delimiters-mode)** this line state that if we are in a programming mode launch rainbow-delimiters-mode.
 #+begin_src emacs-lisp
 ;;colors delimiters for easy matching
@@ -336,7 +323,6 @@ Welcome to [[https://orgmode.org/][Org Mode]]. This is one of the notable featur
 ** Font Configuration
 First up lets look at seating up the text to be more pleasing when working on an org doc.
 
-Code:
 The following code snippet translates the base bullet point ' - ' and translates it into a nicer looking symbol in this case '•'. It also modifies the size of the headings based on the level in which it appears and makes sure that any features that require a fixed-face font are set to fixed-face. 
 #+begin_src emacs-lisp
   (defun IDEmacs-font-setup ()
@@ -514,7 +500,6 @@ allows the binding of keys to allow quick access of files to do things like add 
 ** Heading Bullets  
 Having * ** *** **** in your headings can become rather busy to look at to fix this problem we can use the package org-bullets this gives each level a unique symbol which you can then modify to your liking.
 
-Code:
 gets org-bullets and launches it anytime we enter org-mode. we then set the bullets to a custom list to keep a theme running in our files instead of letting the package auto assign symbols. If you wanna see what symbols the package will do natural remove the lines following *:custom*.
 #+begin_src emacs-lisp
 (use-package org-bullets
@@ -528,9 +513,8 @@ gets org-bullets and launches it anytime we enter org-mode. we then set the bull
 
 
 ** Center Org Mode Buffers
-Welcome to More formatting of text *YAY!*.  No for real tho in this section we have code that centers the org buffer on screen to make it closer to other document editorrs most people are fimilar with. For more infromation on visual-fill-column click [[https://github.com/joostkremers/visual-fill-column][here]].
+Welcome to More formatting of text *YAY!*.  No for real tho in this section we have code that centers the org buffer on screen to make it closer to other document editorrs most people are familiar with. For more infromation on visual-fill-column click [[https://github.com/joostkremers/visual-fill-column][here]].
 
-Code:
 The following code block sets the size of the "margins", enables the centering of text, and enables column fill mode.
 *(setq visual-fill-column-width VALUE)*
 VALUE: set to an _number_ to change the width of the margins. I find the sweet spot for my devices is anywhere from 80-150. The Value is how many chars from the center you wish to start the text.
@@ -551,10 +535,8 @@ enables visual column-mode must set value to 1 _AND_ run in conjunction with *(v
 
 
 ** Configure Babel Languages
-Description:
-[[https://orgmode.org/worg/org-contrib/babel/][org-babel]] allows for some awesome functionality with code blocks in org docs such as being able to evaluate and display the results of the code or writing the code to a separate source file as you develop. such as this file does with your Emacs config file.
+[[https://orgmode.org/worg/org-contrib/babel/][org-babel]] allows for some awesome functionality with code blocks in org docs such as being able to evaluate and display the results of the code or writing the code to a separate source file as you develop. such as this file does with your Emacs config 
 
-Code:
 For more infromation on babel languages click [[https://orgmode.org/worg/org-contrib/babel/languages/index.html][here]]
 #+begin_src emacs-lisp
   (org-babel-do-load-languages
@@ -567,11 +549,9 @@ For more infromation on babel languages click [[https://orgmode.org/worg/org-con
 
 
 
-** Auto-tangle Configuration Files
-Description:
+** Auto-tangle Configuration Files:
 The point of this code is to let this file Auto-tangle with the .Emacs file. What this means is that this file when you save, it should automatically out-put the code blocks to the file specified in the header at the top of this file. For more infromation on tangle click [[https://orgmode.org/manual/Extracting-Source-Code.html][here]]
 
-Code:
 The following block defines a user function to run the tangle command after the buffer is saved. Every time we eval code to output it to the file named in the header of this file org-babel will ask if it is okay to eval this becomes a pain very quickly for large files so to turn this off we set *(org-confirm-babel-evaluate)* to nil.
 #+begin_src emacs-lisp
   ;; Automatically tangle our Emacs.org config file when we save it
@@ -588,10 +568,8 @@ The following block defines a user function to run the tangle command after the 
 
 
 ** Org Templates 
-Description:
-[[https://github.com/dangom/org-mode/blob/master/lisp/org-tempo.el][Org Tempo]] is a add on to org mode that extends the functionality of templates for code blocks. Below we set up a few templates to make inserting code blocks easier. to insert a code block for one of the languages below is simply type "<name" ie. "<el Tab" will insert a code block for emacs lisp.
+[[https://github.com/dangom/org-mode/blob/master/lisp/org-tempo.el][Org Tempo]] is a add on to org mode that extends the functionality of templates for code blocks. Below we set up a few templates to make inserting code blocks easier. to insert a code block for one of the languages below is simply type "<name" ie. "<el Tab" will insert a code block for emacs 
 
-Code:
 #+begin_src emacs-lisp
 (require 'org-tempo)
 
@@ -603,9 +581,8 @@ Code:
 
 
 * Which Key
+Which key is a helpful feature for all users but especially new users as it gives you a way to see what the options are for hot keys as you start typing the. Simply start the key bind sequence and scan the results to find the function. ie. type "C-c " this will pull up a mini window with the possible completions. 
 
-
-Code:
 #+begin_src emacs-lisp
   (use-package which-key
     :init
@@ -623,7 +600,6 @@ Welcome to our Spelling and Error Checking for code and text file. This section 
 ** Flycheck
 Welcome to [[https://www.flycheck.org/en/latest/][Flycheck]]! Flycheck is an Emacs package for on the fly syntax checking. This package combined with others can help make Emacs feel more like a complete IDE. Like any feature tho there maybe places where you prefer to have the feature turned off. to save you the hassle of having to turn off Flycheck manually just add the mode you wish to exclude to the Flycheck Exclusion List 
 
-Code:
 The following code block uses the package flycheck and the runs it anytime a program-mode is detected
 #+begin_src emacs-lisp
   (use-package flycheck
@@ -648,18 +624,12 @@ Welcome to  [[http://company-mode.github.io/][Company]] Mode. Company is a packa
 *** Company Mode
 Company mode is a auto complete package for Emacs I use company mainly inside of programming languages to help me remember the full name of functions or other language specific features.
 
-Code:
 This code block enables company mode for all programming modes, org-mode as well,  and sets a few additional setting to make the experience of company more responsive.  *company-set-idle-delay* determines the time before the suggestions pop on screen. Where *company-minimum-prefix-length* determines the amount of chars you need before suggestions will appear on screen. 
 #+begin_src emacs-lisp
   (use-package company
     :hook
     (prog-mode . company-mode)
     (org-mode . company-mode)
-    :bind
-    (:map company-active-map
-          ("<tab>" . company-complete-selection))
-    (:map lsp-mode-map
-          ("<tab>" . company-indent-or-complete-common))
     :config
     (setq company-idle-delay 0.1)  
     (setq company-minimum-prefix-length 1))
@@ -668,7 +638,6 @@ This code block enables company mode for all programming modes, org-mode as well
 *** Company Box Mode
  [[https://github.com/sebastiencs/company-box][Company-Box]] mode is an extension on Company-mode. This extension adds to addition functionality as well as cleans up the UI of the suggestions.
 
-Code:
 The hook in this code makes sure that if Emacs goes into Company-mode that company-box-mode will also launch.
 #+begin_src emacs-lisp
 (use-package company-box
@@ -679,7 +648,6 @@ The hook in this code makes sure that if Emacs goes into Company-mode that compa
 *** Company Exclusion List
 Hopefully if you have been reading through this document the following code block should be familiar to you. just any modes to the mode '( ) that you wish to exclude from running Company. I use company for most modes so for me this will be empty.
 
-Code:
 #+begin_src emacs-lisp
   ;;(dolist (mode '())
     ;;(add-hook mode (lambda () (company-mode 0))))
@@ -687,12 +655,11 @@ Code:
 
 
 * Development
+The Development section has packages that relate to the easy of use and work flow of coding projects that you might find useful. Projectile is a project manager, Magit is a git companion and Treemacs is a file display tree for easy project navigation.
 
 ** Projectile
-Description:
 [[https://docs.projectile.mx/projectile/index.html][Projectile]] is a local project manager. Determines if files in a directory are in a project such as directories that contain a .git or a .projectile. if it detects on of these files additional functionally becomes available such as replacing an instance of something across the whole project or jumping to files anywhere in the project directory.
 
-Code:
 The following code block dosent do much to change the base functionality of projectile we change the key binds to access projectile commands, define which auto complete to use and provide a path to where we store our git repositories. 
 #+begin_src emacs-lisp
 (use-package projectile
@@ -715,21 +682,17 @@ The following code block dosent do much to change the base functionality of proj
 
 
 ** Magit
-Description: 
-Magit is a git companion. I am still trying to figure this out as well. I was told it was a must have tool with Emacs so I thought I would check it out.
+ [[https://magit.vc/][Magit]] is a git companion.
 
-Code:
-Does not want to download
+
 #+begin_src emacs-lisp
-
+(use-package magit)
 #+end_src
 
 
-
 ** Treemacs
-Treemacs is a file display system similar to something found in vs code. This is installed as a dependency of lsp-treemacs and all of its features I might put more effort into its customization later.
+ [[https://github.com/Alexander-Miller/treemacs][Treemacs]] is a file display system similar to something found in vs code. This is installed as a dependency of lsp-treemacs and all of its features. This package has some nice functionality and a large amount of customization's.
 
-Code:
 #+begin_src emacs-lisp
   (use-package treemacs
     :defer t
@@ -741,6 +704,7 @@ Code:
     (setq treemacs-width 20)
     (setq treemacs-indention 3)
     :bind
+    ;; global map to pull up the currently displayed project.
     (:map global-map
           ("C-c q" . treemacs)))
 
@@ -759,10 +723,8 @@ Code:
 Welcome to the [[https://github.com/emacs-lsp/lsp-mode][lsp]] section. Lsp is a language server protocol that allows your editor access to a languages syntax such as java or c/c++. This package allows Emacs to have a more IDE like feel with error highlighting and info Boxes for different parts of the language.
 
 ** Lsp Mode
-Description: 
 The following section is the basic package for lsp-mode and some simple hook statements to help run it when a compatible program-mode is detected.
 
-Code: 
 #+begin_src emacs-lisp
   (use-package lsp-mode
     :commands
@@ -779,16 +741,15 @@ Code:
 
 
 ** Lsp UI
-Description: 
 lsp-ui adds additional features to the lsp library to allow for better customization's of lsp-mode. Note that all you need to do at base is call **(use-package)** lsp-ui.
 
-Code:
 #+begin_src emacs-lisp
   (use-package lsp-ui)
 #+end_src
 
 
 ** Lsp  Treemacs
+Adds a unique file display tree for lsp-mode.
 
 #+begin_src emacs-lisp
   (use-package lsp-treemacs
@@ -824,5 +785,8 @@ Code:
   (define-key global-map (kbd "C-c a")
     (lambda () (interactive) (org-agenda-list "a")))
 #+end_src
+
+
+
 
 
