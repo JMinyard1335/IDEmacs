@@ -101,7 +101,7 @@
   (set-face-attribute 'org-table nil   :inherit '(shadow fixed-pitch))
   (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
   (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
-  (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+  (set-ofixed-pitch))
   (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
 
 (defun IDEmacs-org-mode-setup ()
@@ -147,7 +147,8 @@
 
 (defun IDEmacs-org-agenda-setup ()
       (setq org-agenda-files
-            '("~/Documents/Projects/Code/Org-Mode/Schedule/Task.org"))
+            '("~/Documents/Projects/Code/Org-Mode/Schedule/Task.org")
+            '("~/Documents/School/AssignmentSchedule.org"))
       (setq org-deadline-warning-days 7)
       (setq org-agenda-start-with-log-mode t)
       (setq org-log-done 'time)
@@ -283,25 +284,6 @@
 ;;(dolist (mode '())
   ;;(add-hook mode (lambda () (company-mode 0))))
 
-(use-package projectile
-  :diminish
-  projectile-mode
-  :config
-  ;; Turns on global projectile
-  (projectile-mode)
-  :custom
-  ((projectile-completion-system 'company))
-  :bind-keymap
-  ;; Sets C-c p to open projectile commands
-  ("C-c p" . projectile-command-map)
-  :init
-  ;; NOTE: Set this to the folder where you keep your Git repos!
-  (when (file-directory-p "~/Documents/Projects/Code")
-    (setq projectile-project-search-path '("~/Documents/Projects/Code")))
-  (setq projectile-switch-project-action #'projectile-dired))
-
-(use-package magit)
-
 (use-package treemacs
   :defer t
   :init
@@ -324,6 +306,25 @@
   :after (treemacs magit)
   :ensure t)
 
+(use-package projectile
+  :diminish
+  projectile-mode
+  :config
+  ;; Turns on global projectile
+  (projectile-mode)
+  :custom
+  ((projectile-completion-system 'company))
+  :bind-keymap
+  ;; Sets C-c p to open projectile commands
+  ("C-c p" . projectile-command-map)
+  :init
+  ;; NOTE: Set this to the folder where you keep your Git repos!
+  (when (file-directory-p "~/Documents/Projects/Code")
+    (setq projectile-project-search-path '("~/Documents/Projects/Code")))
+  (setq projectile-switch-project-action #'projectile-dired))
+
+(use-package magit)
+
 (use-package lsp-mode
   :commands
   (lsp lsp-deferred)
@@ -344,6 +345,14 @@
 (lsp-treemacs-sync-mode 1)
 (setq lsp-treemacs-width 20)
 :bind (:map global-map ("C-c t" . lsp-treemacs-symbols)))
+
+(use-package lsp-java :config (add-hook 'java-mode-hook 'lsp))
+(use-package helm-lsp)
+(use-package helm
+  :config (helm-mode))
+
+(use-package dap-mode :after lsp-mode :config (dap-auto-configure-mode))
+(use-package dap-java :ensure nil)
 
 ;;This is a useful keybind that allows ESC to exit out of prompts.
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)

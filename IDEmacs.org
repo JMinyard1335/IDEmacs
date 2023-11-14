@@ -324,6 +324,7 @@ Welcome to [[https://orgmode.org/][Org Mode]]. This is one of the notable featur
 First up lets look at seating up the text to be more pleasing when working on an org doc.
 
 The following code snippet translates the base bullet point ' - ' and translates it into a nicer looking symbol in this case '•'. It also modifies the size of the headings based on the level in which it appears and makes sure that any features that require a fixed-face font are set to fixed-face. 
+
 #+begin_src emacs-lisp
   (defun IDEmacs-font-setup ()
     ;; Replace list hyphen with dot
@@ -349,10 +350,9 @@ The following code snippet translates the base bullet point ' - ' and translates
     (set-face-attribute 'org-table nil   :inherit '(shadow fixed-pitch))
     (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
     (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
-    (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+    (set-ofixed-pitch))
     (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
 #+end_src
-
 
 
 
@@ -414,7 +414,8 @@ set up for or-agenda. in this section we set up the path to specified file  or f
 #+begin_src emacs-lisp
 (defun IDEmacs-org-agenda-setup ()
       (setq org-agenda-files
-            '("~/Documents/Projects/Code/Org-Mode/Schedule/Task.org"))
+            '("~/Documents/Projects/Code/Org-Mode/Schedule/Task.org")
+            '("~/Documents/School/AssignmentSchedule.org"))
       (setq org-deadline-warning-days 7)
       (setq org-agenda-start-with-log-mode t)
       (setq org-log-done 'time)
@@ -657,6 +658,35 @@ Hopefully if you have been reading through this document the following code bloc
 * Development
 The Development section has packages that relate to the easy of use and work flow of coding projects that you might find useful. Projectile is a project manager, Magit is a git companion and Treemacs is a file display tree for easy project navigation.
 
+** Treemacs
+ [[https://github.com/Alexander-Miller/treemacs][Treemacs]] is a file display system similar to something found in vs code. This is installed as a dependency of lsp-treemacs and all of its features. This package has some nice functionality and a large amount of customization's.
+
+#+begin_src emacs-lisp
+  (use-package treemacs
+    :defer t
+    :init
+    (with-eval-after-load 'winum
+      (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+    :config
+    (treemacs-git-mode 'extended)
+    (setq treemacs-width 20)
+    (setq treemacs-indention 3)
+    :bind
+    ;; global map to pull up the currently displayed project.
+    (:map global-map
+          ("C-c q" . treemacs)))
+
+  (use-package treemacs-projectile
+    :after (treemacs projectile)
+    :ensure t)
+
+  (use-package treemacs-magit
+    :after (treemacs magit)
+    :ensure t)
+
+#+end_src
+
+
 ** Projectile
 [[https://docs.projectile.mx/projectile/index.html][Projectile]] is a local project manager. Determines if files in a directory are in a project such as directories that contain a .git or a .projectile. if it detects on of these files additional functionally becomes available such as replacing an instance of something across the whole project or jumping to files anywhere in the project directory.
 
@@ -690,39 +720,10 @@ The following code block dosent do much to change the base functionality of proj
 #+end_src
 
 
-** Treemacs
- [[https://github.com/Alexander-Miller/treemacs][Treemacs]] is a file display system similar to something found in vs code. This is installed as a dependency of lsp-treemacs and all of its features. This package has some nice functionality and a large amount of customization's.
-
-#+begin_src emacs-lisp
-  (use-package treemacs
-    :defer t
-    :init
-    (with-eval-after-load 'winum
-      (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
-    :config
-    (treemacs-git-mode 'extended)
-    (setq treemacs-width 20)
-    (setq treemacs-indention 3)
-    :bind
-    ;; global map to pull up the currently displayed project.
-    (:map global-map
-          ("C-c q" . treemacs)))
-
-  (use-package treemacs-projectile
-    :after (treemacs projectile)
-    :ensure t)
-
-  (use-package treemacs-magit
-    :after (treemacs magit)
-    :ensure t)
-
-#+end_src
-
-
-* Lsp Mode
+** Lsp Mode
 Welcome to the [[https://github.com/emacs-lsp/lsp-mode][lsp]] section. Lsp is a language server protocol that allows your editor access to a languages syntax such as java or c/c++. This package allows Emacs to have a more IDE like feel with error highlighting and info Boxes for different parts of the language.
 
-** Lsp Mode
+*** Lsp Mode
 The following section is the basic package for lsp-mode and some simple hook statements to help run it when a compatible program-mode is detected.
 
 #+begin_src emacs-lisp
@@ -740,7 +741,7 @@ The following section is the basic package for lsp-mode and some simple hook sta
 #+end_src
 
 
-** Lsp UI
+*** Lsp UI
 lsp-ui adds additional features to the lsp library to allow for better customization's of lsp-mode. Note that all you need to do at base is call **(use-package)** lsp-ui.
 
 #+begin_src emacs-lisp
@@ -748,7 +749,7 @@ lsp-ui adds additional features to the lsp library to allow for better customiza
 #+end_src
 
 
-** Lsp  Treemacs
+*** Lsp  Treemacs
 Adds a unique file display tree for lsp-mode.
 
 #+begin_src emacs-lisp
@@ -758,6 +759,25 @@ Adds a unique file display tree for lsp-mode.
   (lsp-treemacs-sync-mode 1)
   (setq lsp-treemacs-width 20)
   :bind (:map global-map ("C-c t" . lsp-treemacs-symbols)))
+#+end_src
+
+
+*** Lsp Java
+What is currently missing from using lsp-java mode.
+#+begin_src emacs-lisp
+(use-package lsp-java :config (add-hook 'java-mode-hook 'lsp))
+(use-package helm-lsp)
+(use-package helm
+  :config (helm-mode))
+#+end_src
+
+
+** Dap
+Dap is a debugger.
+
+#+begin_src emacs-lisp
+(use-package dap-mode :after lsp-mode :config (dap-auto-configure-mode))
+(use-package dap-java :ensure nil)
 #+end_src
 
 
