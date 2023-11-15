@@ -22,7 +22,7 @@
 ;;(if (window-system) (set-frame-size (selected-frame) 124 40))
 
 ;; If you dont care about tweaking the height and width the following commands will work just fine
-;; uncomment this linestart the initial frame maximized
+;; uncomment this line to start the initial frame maximized
 ;;(add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
 ;; uncomment this line to start every frame maximized
@@ -102,7 +102,7 @@
   (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
   (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
   (set-ofixed-pitch))
-  (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
+  (set-face-attribute 'org-checkbox nil :inherit '(fixed-pitch))
 
 (defun IDEmacs-org-mode-setup ()
   (org-indent-mode)
@@ -340,11 +340,12 @@
 (use-package lsp-ui)
 
 (use-package lsp-treemacs
-:after lsp
-:config
-(lsp-treemacs-sync-mode 1)
-(setq lsp-treemacs-width 20)
-:bind (:map global-map ("C-c t" . lsp-treemacs-symbols)))
+  :after lsp
+  :config
+  (lsp-treemacs-sync-mode 1)
+  (setq lsp-treemacs-width 20)
+  :bind 
+  (:map global-map ("C-c t" . lsp-treemacs-symbols)))
 
 (use-package lsp-java :config (add-hook 'java-mode-hook 'lsp))
 (use-package helm-lsp)
@@ -358,9 +359,12 @@
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
 ;; Sets up Unique keybinds for Org-Mode  
+;; Add entry to your journal
 (define-key global-map (kbd "C-c j")
-    (lambda () (interactive) (org-capture nil "jj")))
+  (lambda () (interactive) (org-capture nil "jj")))
+;; set a todo task
 (define-key global-map (kbd "C-c l")
-    (lambda () (interactive) (org-capture nil "tt")))
+  (lambda () (interactive) (org-capture nil "tt")))
+;; Open the Agenda.    
 (define-key global-map (kbd "C-c a")
   (lambda () (interactive) (org-agenda-list "a")))

@@ -1,6 +1,6 @@
 #+PROPERTY: header-args:emacs-lisp :tangle ./init.el
 * Header 
-*Welcome To IDEmacs this custom configuration was created by Jachin Minyard in attempts to better understand Emacs, emacs-lisp and create an environment more along the lines of other IDE such as VS Code. Different aspects of the configuration are broken up into smaller sections below. Alot of the basis for my understanding of this material is due in part to the documentation but also the wonderful people over at !SystemCrafters! More features will continue to be added as I learn more about this enviroment. I hope you enjoy looking at my journy to master the Emacs environment*
+*Welcome To IDEmacs this custom configuration was created by Jachin Minyard in attempts to better understand Emacs, emacs-lisp and create an environment more along the lines of other IDE such as VS Code. Different aspects of the configuration are broken up into smaller sections below. Alot of the basis for my understanding of this material is due in part to the documentation but also the wonderful people over at !SystemCrafters! More features will continue to be added as I learn more about this enviroment. I hope you enjoy looking at my journey to master the Emacs environment*
 
 
 * Package Management
@@ -84,7 +84,7 @@ changinf the 'initial-frame-alist -> 'default-frame-alist, you can change if jus
 ;;(if (window-system) (set-frame-size (selected-frame) 124 40))
 
 ;; If you dont care about tweaking the height and width the following commands will work just fine
-;; uncomment this linestart the initial frame maximized
+;; uncomment this line to start the initial frame maximized
 ;;(add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
 ;; uncomment this line to start every frame maximized
@@ -301,7 +301,7 @@ These are additional themes added by the [[https://github.com/doomemacs/themes/t
 74. doom-xcode
 75. doom-zenburn 
 
-
+    
 ** Rainbow Delimiters
 [[https://github.com/Fanael/rainbow-delimiters][Rainbow Delimiters]]
 The following package is more of a utility package up since it changes the way delimiters appear in programming modes I decided to include it here. Rainbow Delimiters makes it so that matching delimiters will have the same color to make it easier to find matching parenthesis.
@@ -351,7 +351,7 @@ The following code snippet translates the base bullet point ' - ' and translates
     (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
     (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
     (set-ofixed-pitch))
-    (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
+    (set-face-attribute 'org-checkbox nil :inherit '(fixed-pitch))
 #+end_src
 
 
@@ -659,7 +659,7 @@ Hopefully if you have been reading through this document the following code bloc
 The Development section has packages that relate to the easy of use and work flow of coding projects that you might find useful. Projectile is a project manager, Magit is a git companion and Treemacs is a file display tree for easy project navigation.
 
 ** Treemacs
- [[https://github.com/Alexander-Miller/treemacs][Treemacs]] is a file display system similar to something found in vs code. This is installed as a dependency of lsp-treemacs and all of its features. This package has some nice functionality and a large amount of customization's.
+[[https://github.com/Alexander-Miller/treemacs][Treemacs]] is a file display system similar to something found in vs code. This is installed as a dependency of lsp-treemacs and all of its features. This package has some nice functionality and a large amount of customization's.
 
 #+begin_src emacs-lisp
   (use-package treemacs
@@ -691,6 +691,7 @@ The Development section has packages that relate to the easy of use and work flo
 [[https://docs.projectile.mx/projectile/index.html][Projectile]] is a local project manager. Determines if files in a directory are in a project such as directories that contain a .git or a .projectile. if it detects on of these files additional functionally becomes available such as replacing an instance of something across the whole project or jumping to files anywhere in the project directory.
 
 The following code block dosent do much to change the base functionality of projectile we change the key binds to access projectile commands, define which auto complete to use and provide a path to where we store our git repositories. 
+
 #+begin_src emacs-lisp
 (use-package projectile
   :diminish
@@ -712,8 +713,7 @@ The following code block dosent do much to change the base functionality of proj
 
 
 ** Magit
- [[https://magit.vc/][Magit]] is a git companion.
-
+ [[https://magit.vc/][Magit]] is a git companion. I have not made any customization's to this package and just use it at base. A quick run down of some of the commands first of open the magit buffer with "C-x g" This will open a new buffer with an over view of your current project now here's the kicker type h and it will give you a list of commands available. In the buffer some basic info such as staged and unstaged changes and recent commits should be shown. Some of these sections are collapsible this can be done with Tab. if you cursor over an unstaged file and type "s" you will stage that file. to unstage one select it and type "u". You can open the commit options by typing "c", and pushes can be done with "p". for more info on what is available check the documentation linked above.
 
 #+begin_src emacs-lisp
 (use-package magit)
@@ -754,11 +754,12 @@ Adds a unique file display tree for lsp-mode.
 
 #+begin_src emacs-lisp
   (use-package lsp-treemacs
-  :after lsp
-  :config
-  (lsp-treemacs-sync-mode 1)
-  (setq lsp-treemacs-width 20)
-  :bind (:map global-map ("C-c t" . lsp-treemacs-symbols)))
+    :after lsp
+    :config
+    (lsp-treemacs-sync-mode 1)
+    (setq lsp-treemacs-width 20)
+    :bind 
+    (:map global-map ("C-c t" . lsp-treemacs-symbols)))
 #+end_src
 
 
@@ -798,15 +799,13 @@ Dap is a debugger.
 
 #+begin_src emacs-lisp
   ;; Sets up Unique keybinds for Org-Mode  
+  ;; Add entry to your journal
   (define-key global-map (kbd "C-c j")
-      (lambda () (interactive) (org-capture nil "jj")))
+    (lambda () (interactive) (org-capture nil "jj")))
+  ;; set a todo task
   (define-key global-map (kbd "C-c l")
-      (lambda () (interactive) (org-capture nil "tt")))
+    (lambda () (interactive) (org-capture nil "tt")))
+  ;; Open the Agenda.    
   (define-key global-map (kbd "C-c a")
     (lambda () (interactive) (org-agenda-list "a")))
 #+end_src
-
-
-
-
-
