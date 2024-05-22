@@ -1,0 +1,13 @@
+#+TITLE: IDEmacs
+#+AUTHOR: Jachin Minyard
+
+* Introduction
+IDEmacs is a collection of tools for Emacs that provide a more modern feel to Emacs. The current version of IDEmacs is 0.0.1 and focuses on the creation of an org files to store the task I deal with in my work flow. This version also includes a sidebar option that reads an org file that the user can populate with links to different files and views.
+
+* Installation
+
+** Requirements
+
+* IDEmacs Agenda
+
+* IDEmacs Sidebar
