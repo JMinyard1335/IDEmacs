@@ -22,7 +22,6 @@
 (require 'IDEmacs-orgfiles)
 (require 'IDEmacs-user)
 (require 'IDEmacs-agenda)
-(require 'IDEmacs-dashboard)
 (require 'IDEmacs-sidebar)
 
 ;; Define The Main group in the package

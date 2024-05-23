@@ -8,7 +8,7 @@
   Download the files into a folder. add the folder to the Emacs load path. After this you can use require or use-package to load it.
 ** Requirements
    This Package requires the following packages to be installed:
-   - org-agenda
+   - org-super-agenda
    - org-modern
    - olivetti 
    - doct
@@ -19,11 +19,35 @@
   This is the main package and is in charge of setting up the IDEmacs-mode. This mode is a minor mode that wraps the other packages. While this package is not required to use the features found in the other packages. it helps link there functions together into a more cohesive configuration. idemacs-mode defines a keymap that can be used to set up Sudo global keybinds as idemacs-mode is a global mode and work in all buffers once it is activated.
 ** Variables
 *** IDEmacs-theme
+    This is the theme that is applied when idemas-mode is run.
+    #+begin_src emacs-lisp
+      (setq IDEmacs-theme 'candyLand)
+    #+end_src    
 *** IDEmacs-font-size
+    This is the font size that is applied when idemas-mode is run.
+    #+begin_src emacs-lisp
+      (setq IDEmacs-font-size 120)
+    #+end_src
 *** Idemacs-line-numbers
+    If t then line numbers are added to programing modes inside of IDEmacs.
+    #+begin_src emacs-lisp
+      (setq Idemacs-line-numbers t)
+    #+end_src
 *** IDEmacs-sidebar-on-startup
+    If t then the sidebar is loaded when idemacs-mode is run.
+    #+begin_src emacs-lisp
+      (setq IDEmacs-sidebar-on-startup t)
+    #+end_src
 *** IDEmacs-agenda-on-startup
+    If t then the agenda is loaded when idemacs-mode is run.
+    #+begin_src emacs-lisp
+      (setq IDEmacs-agenda-on-startup t)
+    #+end_src
 *** IDEmacs-mode-map
+    This is the keymap that is used in idemacs-mode.
+    #+begin_src emacs-lisp
+      (define-key IDEmacs-mode-map (kbd "C-c C-s") 'idemacs/sidebar-open)
+    #+end_src
 
 * IDEmacs Orgfiles
   IDEmacs-orgfiles.el is a package that holds some custom variables to help with the creation of org files. The main function is the setting and the reformating of these org files. The org files defined by default are used in the IDEmacs-mode org-capture-template setup. This file contains several groups one for each of the default org files. This is to make it eaiser to customize the groups through the customize=group interface.
