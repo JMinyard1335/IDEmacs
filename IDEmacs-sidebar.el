@@ -12,21 +12,27 @@
 (require 'subr-x)
 (require 'ob-shell)
 
-(defgroup IDEmacs-org-sidebar nil
+(defgroup IDEmacs-sidebar nil
   "Sidebar for org-mode files."
   :group 'IDEmacs)
 
 (defcustom idemacs-sidebar-file "~/.emacs.d/IDEmacs/OrgFiles/Sidebar.org"
   "The file to use for the sidebar."
   :type 'string
-  :group 'IDEmacs-org-sidebar)
+  :group 'IDEmacs-sidebar)
+
+(defcustom idemacs-sidebar-template
+  "* Schedules:\n [[sidebar:daily-agenda][Daily Quest]]\n [[sidebar:school-agenda][School Agenda]]\n\n* Config\n [[IDEmacs_file:~/.emacs.d/init.el][Init File]]\n"
+  "The template to be writen to the idemacs sidebar file on creation."
+  :type 'string
+  :group 'IDEmacs-sidebar)
 
 (defcustom idemacs-sidebar-link-name "sidebar"
   "Default link name"
   :type 'string
   :group 'IDEmacs-org-sidebar)
 
-(defcustom idemacs-sidebar-width 40
+(defcustom idemacs-sidebar-width 30
   "Width of the sidebar."
   :type 'integer
   :group 'IDEmacs-org-sidebar)
@@ -73,8 +79,29 @@
     ;; Turn off read only
     (setq buffer-read-only nil)))
 
+;; all mine
+(defun idemacs/sidebar-set-path (file)
+  "Set `idemacs-personal-path' to (FILE)."
+  (interactive "FSelect a path: ")
+  (if (not (file-exists-p file))
+      (idemacs/helper-create-file file idemacs-sidebar-template))
+  (setq idemacs-sidebar-file file)
+  (message "Sidebar file set to %s" idemacs-sidebar-file))
+
+(defun idemacs/sidebar-reformat-file ()
+  "Reformat the sidebar file."
+  (interactive)
+  (if (y-or-n-p (format "Would you like to reformat %s? " idemacs-sidebar-file))
+      (progn (with-temp-buffer
+	       (write-region idemacs-sidebar-template nil idemacs-sidebar-file)
+	       (save-buffer)
+	       (kill-buffer))
+	     (message "%s reformated sucessfully" idemacs-sidebar-file))
+      (message "%s was not reformated" idemacs-sidebar-file)))
+
 (defun idemacs/sidebar-open ()
   "If the file exisits, open it, and run the minor mode on it."
+  (interactive)
   (if (file-exists-p idemacs-sidebar-file)
       (let ((sidebar-window (idemacs/sidebar-open-p)))
 	(unless sidebar-window
@@ -87,8 +114,8 @@
 		  (cons 'window-parameters
 			(list
 			 (cons 'no-delete-other-windows t)
-			 (cons 'no-other-window  t)
-			 (cons 'mode-line-format  nil)))))))
+			 (cons 'no-other-window t)
+			 (cons 'mode-line-format nil)))))))
 	(select-window sidebar-window)
 	(idemacs-sidebar-mode))
     (message (format " %s does not exisit." idemacs-sidebar-file))))
@@ -122,7 +149,32 @@ Bound by default to `M-I s'."
 	    (when (equal (window-buffer window) buffer)
 	      (throw 'found window))))))))
 
+(defun idemacs/sidebar-format-capture-link ()
+  "Creates the link to store in the sidebar with a capture template."
+  (format "[[%s:%s][%s]]"
+	  (idemacs/sidebar-get-file-type)
+	  (read-file-name "File: ")
+ 	  (read-string "Label ")))
+	  
+(defun idemacs/sidebar-get-file-type ()
+  "This function is used to get the file type for the link."
+  (let ((file-type (completing-read "Select file type: "
+				    (list '"IDEmacs_file" idemacs-sidebar-link-name))))
+    (cond ((string= file-type "IDEmacs_file") "IDEmacs_file")
+	  ((string= file-type idemacs-sidebar-link-name) idemacs-sidebar-link-name))))
 
+(defun idemacs/sidebar-insert-link ()
+  "Insert a link into the sidebar."
+  (interactive)
+  (let ((org-capture-templates (doct (list (idemacs/capture-sidebar-entries))))
+	(window (get-buffer-window (current-buffer))))
+    (setq buffer-read-only nil)
+    (set-window-parameter window 'window-side nil)
+    (org-capture 0 "bl")
+    (set-window-parameter window 'window-side 'left)
+    (setq buffer-read-only t)))
+	 
+;; -------------------------------------------------------------------
 (defun idemacs/sidebar-show-matches (query file header)
   "Shows the (HEADER) in the (FILE) that match the (QUERY)"
   (let ((org-agenda-overriding-header (concat header "\n"))
@@ -148,7 +200,7 @@ Bound by default to `M-I s'."
 
 (defun idemacs/sidebar-agenda-school-view ()
   "Change to the other window close it and open `IDEmacs/view-school-agenda'."
-  (if (get-buffer "*Org Agenda")
+  (if (get-buffer "*Org Agenda*")
       (progn
 	(other-window 1)
 	(kill-buffer "*Org Agenda*")
@@ -169,6 +221,9 @@ Bound by default to `M-I s'."
       (idemacs/sidebar-agenda-day-view))
      ((string-equal query "school-agenda")
       (idemacs/sidebar-agenda-school-view))
+     ((not fmt)
+      (other-window 1)
+      (org-agenda-show-matches query files description))
      )))
       
 
@@ -264,8 +319,6 @@ Bound by default to `M-I s'."
 		     key
 		     (format "(lambda () (interactive) (%s))" call))))))
     map))
-
-(define-key global-map (kbd "M-I s") #'idemacs/sidebar-toggle)
 
 (provide 'IDEmacs-sidebar)
 ;;; IDEmacs-sidebar.el ends here

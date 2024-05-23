@@ -2,12 +2,75 @@
 #+AUTHOR: Jachin Minyard
 
 * Introduction
-IDEmacs is a collection of tools for Emacs that provide a more modern feel to Emacs. The current version of IDEmacs is 0.0.1 and focuses on the creation of an org files to store the task I deal with in my work flow. This version also includes a sidebar option that reads an org file that the user can populate with links to different files and views.
+  IDEmacs is a collection of tools for Emacs that provide a more modern feel to Emacs. The current version of IDEmacs is 0.0.1 and focuses on the creation of an org files to store the task I deal with in my work flow. This version also includes a sidebar option that reads an org file that the user can populate with links to different files and views.
 
 * Installation
-
+  Download the files into a folder. add the folder to the Emacs load path. After this you can use require or use-package to load it.
 ** Requirements
+   This Package requires the following packages to be installed:
+   - org-agenda
+   - org-modern
+   - olivetti 
+   - doct
+   - nerd-icons
+     - having a nerd font on your system is recommended for this package to work correctly.
+     
+* IDEmacs
+  This is the main package and is in charge of setting up the IDEmacs-mode. This mode is a minor mode that wraps the other packages. While this package is not required to use the features found in the other packages. it helps link there functions together into a more cohesive configuration. idemacs-mode defines a keymap that can be used to set up Sudo global keybinds as idemacs-mode is a global mode and work in all buffers once it is activated.
+** Variables
+*** IDEmacs-theme
+*** IDEmacs-font-size
+*** Idemacs-line-numbers
+*** IDEmacs-sidebar-on-startup
+*** IDEmacs-agenda-on-startup
+*** IDEmacs-mode-map
+
+* IDEmacs Orgfiles
+  IDEmacs-orgfiles.el is a package that holds some custom variables to help with the creation of org files. The main function is the setting and the reformating of these org files. The org files defined by default are used in the IDEmacs-mode org-capture-template setup. This file contains several groups one for each of the default org files. This is to make it eaiser to customize the groups through the customize=group interface.
+** Variables:
+*** idemacs-personal-default-path 
+*** idemacs-personal-default-template
+*** idemacs-home-default-path 
+*** idemacs-home-default-template
+*** idemacs-school-default-path 
+*** idemacs-school-default-template
+*** idemacs-refile-default-path 
+*** idemacs-refile-default-template
+*** idemacs-agenda-file-list
+
+** Functions:
+*** idemacs/personal-set-path
+*** idemacs/personal-reformat-file
+*** idemacs/home-set-path
+*** idemacs/home-reformat-file
+*** idemacs/school-set-path
+*** idemacs/school-reformat-path
+*** idemacs/refile-set-path
+*** idemacs/refile-reformat-file
 
 * IDEmacs Agenda
+  IDEmacs-agenda.el is a package that customizes the org-agenda to have different views built to work with the org files created by IDEmacs-orgfiles.el. The main function is the creation of the different views that are used in the IDEmacs-mode, and the capturing of information to the org files.  
+** Variables
+*** idemacs--agenda-tag-list
+    
+** Functions
+*** idemacs/view-daily-quest
+*** idemacs/view-school-agenda
+*** idemacs/view-agenda
+*** idemacs/capture-school-class
+*** idemacs/capture-sidebar-entries
 
 * IDEmacs Sidebar
+** Variables
+*** idemacs-sidebar-file
+*** idemacs-sidebar-template
+*** idemacs-sidebar-link-name
+*** idemacs-sidebar-width
+*** idemacs-sidebar-lighter
+
+** Functions
+*** idemacs/sidebar-set-path
+*** idemacs/sidebar-reformat-file
+*** idemacs/sidebar-open
+*** idemacs/sidebar-toggle
+*** idemacs/sidebar-insert-link

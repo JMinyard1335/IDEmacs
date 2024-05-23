@@ -19,10 +19,18 @@ HH:MM:SS or HH:MM")
   "Creates a file with the name `file' and writes the string `template' to the file."
   (if (y-or-n-p (format "File %s does not exist. Would you like to create it?" file))
       (progn (find-file file)
+	     (idemacs/helper-create-dir)
 	     (insert template)
 	     (save-buffer)
 	     (kill-buffer))
     (message "File %s not created" file)))
+
+(defun idemacs/helper-create-dir (file)
+  "If the directory to the path does not exisit create it"
+  (let ((dir (file-name-directory file)))
+    (when dir
+      (unless (file-exists-p dir)
+	(make-directory dir t)))))
 
 (defun idemacs/helper-create-classtime-string (time)
   "creates a string from the time format passed in"

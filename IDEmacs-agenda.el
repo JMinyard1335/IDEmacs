@@ -1,5 +1,4 @@
 ;;; IDEmacs-agenda.el --- Agent for IDEmacs -*- lexical-binding: t -*-
-
 ;; Author: Jachin Minyard
 ;; Maintainer: Jachin Minyard
 ;; Version: 0.0.1
@@ -14,6 +13,44 @@
 ;; Packages like org-super-agenda, org-modern, and org-agenda are used to create this system.
 
 ;;; Code:
+;required packages and set up
+(require 'org-capture)
+(use-package org
+  :init (setq inhibit-compacting-font-caches t)
+  :hook
+  (org-mode . org-bullets-mode)
+  (org-mode . visual-line-mode)
+  :config
+  (add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
+  (setq org-agenda-window-setup 'only-window)
+  (setq org-log-done '('time))
+  (setq org-todo-keywords
+	'((sequence "TODO" "IN-PROGRESS" "WAITING" "|" "DONE" "CANCELED")
+	  (sequence "ASSIGNED" "CURRENT" "|" "TURNEDIN")))
+  (setq org-todo-keywords-for-agenda '("TODO" "IN-PROGRESS" "WAITING" "ASSIGNED" "CURRENT"))
+  (setq org-done-keywords-for-agenda '("DONE" "CANCELED" "TURNEDIN"))
+  (setq org-log-into-drawer t)
+  (setq org-deadline-warning-days 7)
+  (setq org-popup-calendar-for-date-prompt nil)
+  (setq org-agenda-hide-tags-regexp ".*")
+  (setq org-adapt-indentation t))
+(use-package olivetti
+  :ensure t
+  :hook
+  (org-agenda-mode . olivetti-mode))
+(use-package org-super-agenda :ensure t
+  :hook (org-agenda-mode . org-super-agenda-mode))
+(use-package org-modern :ensure t)
+(use-package doct
+  :ensure t
+  :commands (doct))
+(use-package org-bullets
+  :ensure t
+  :after org
+  :custom
+  (org-bullets-bullet-list
+   '("◉" "○" "●" "○" "●" "○" "●")))
+
 ; Group Declarations
 (defgroup IDEmacs-Agenda nil
   "Holds all groups related to org agenda and its customizations."
@@ -30,208 +67,21 @@
   "This function is used to follow links of the type `IDEmacs_file'.
 If the file does not exist, the user is prompted to create it.
 The file is opened in the current buffer."
+  (if (idemacs-sidebar-mode)
+      (progn
+	(other-window 1)
+	(idemacs/agenda-create-link-file file))
+    (idemacs/agenda-create-link-file file)))
+
+(defun idemacs/agenda-create-link-file (file)
+  "This function is used to create a file with the name (FILE)."
   (if (not (file-exists-p file))
       (if (y-or-n-p (format "File %s does not exist. Create it?" file))
-	  (find-file file)
+	  (progn
+	    (find-file file)
+	    (switch-to-buffer (current-buffer)))
 	(message "%s Not created." file))
     (find-file file)))
-
-;;;###autoload
-(define-minor-mode idemacs-agenda-mode
-  "A minor mode for IDEmacs agenda."
-  :lighter " IDEA"
-  :init nil
-  (if idemacs-agenda-mode
-      (progn
-	(unless (get-buffer "*Org Agenda*")
-	  (if (not (idemacs/sidebar-open-p))
-	      (idemacs/sidebar-open))))
-    (idemacs/sidebar-kill)))
-
-; idemacs/personal
-(defgroup IDEmacs-Personal nil
-  "Holds all the variables for the agenda's personal files."
-  :group 'IDEmacs-Agenda)
-
-(defconst idemacs-personal-default-path
-  "~/.emacs.d/IDEmacs/OrgFiles/Personal.org"
-  "Hold the default path for the personal org file.
-This should be treated as a constant and never changed.")
-
-(defconst idemacs-personal-default-template
-  "#+CATEGORY: Personal\n\n* Projects\n* Family\n* Reminders\n* Goals\n"
-  "Default string to be written to the file `idemacs-personal-path'.
-This should be treated as a constant and never changed.")
-
-(defcustom idemacs-personal-path idemacs-personal-default-path
-  "The path to an org file for personal tasks."
-  :type 'string
-  :group 'IDEmacs-Personal)
-
-(defcustom idemacs-personal-template idemacs-personal-default-template
-  "A format string that will be written to the personal file."
-  :type 'string
-  :group 'IDEmacs-Personal)
-
-(defun idemacs/personal-set-path (file)
-  "Set `idemacs-personal-path' to (FILE)."
-  (interactive "FSelect a path: ")
-  (if (not (file-exists-p file))
-      (my-create-file file idemacs-personal-template))
-  (setq idemacs-personal-path file)
-  (message "Personal file set to: %s" idemacs-personal-path))
-
-(defun idemacs/personal-reformat-file ()
-  "Clears the file at `idemacs-personal-path'.
-Writes the `idemacs-personal-template' to the file."
-  (interactive)
-  (if (y-or-n-p (format "Would you like to reformat %s? " idemacs-personal-path))
-      (progn (with-temp-buffer
-	       (write-region idemacs-personal-template nil idemacs-personal-path)
-	       (save-buffer)
-	       (kill-buffer))
-	     (message "%s reformated sucessfully" idemacs-personal-path))
-      (message "%s was not reformated" idemacs-personal-path)))
-
-;; idemacs/school
-(defgroup IDEmacs-School nil
-  "Holds all variables related to the agenda's school files."
-  :group 'IDEmacs-Agenda)
-
-(defconst idemacs-school-default-path
-  "~/.emacs.d/IDEmacs/OrgFiles/School.org"
- "Hold the default path for the school org file.
-This should be treated as a constant and never changed.")
-
-(defconst idemacs-school-default-template
-  "#+CATEGORY: School\n\n* Classes\n* Assignments\n* Projects\n* Exams\n* Labs\n"
-  "Default string to be written to the file `idemacs-school-path'.
-This should be treated as a constant and never changed.")
-
-(defcustom idemacs-school-path idemacs-school-default-path
- "The path to an org file for school tasks."
-  :type 'string
-  :group 'IDEmacs-School)
-
-(defcustom idemacs-school-template idemacs-school-default-template
-  "A format string that will be written to the school file."
-  :type 'string
-  :group 'IDEmacs-School)
-
-(defun idemacs/school-set-path (file)
- "Set `idemacs-school-path' to (FILE)."
-  (interactive "FSelect a path: ")
-  (if (not (file-exists-p file))
-      (idemacs/helper-create-file file idemacs-school-template))
-  (setq idemacs-school-path file)
-  (message "School file set to %s" idemacs-school-path))
-
-(defun idemacs/school-reformat-file ()
-  "Clears the file at `idemacs-school-path'.
-Writes the `idemacs-school-template' to the file."
-  (interactive)
-  (if (y-or-n-p (format "Would you like to reformat %s? " idemacs-school-path))
-      (progn (with-temp-buffer
-	       (write-region idemacs-school-template nil idemacs-school-path)
-	       (save-buffer)
-	       (kill-buffer))
-	     (message "%s was reformated" idemacs-school-path))
-    (message "%s was not reformated" idemacs-school-path)))
-
-;; idemacs/home
-(defgroup IDEmacs-Home nil
-  "Holds all variables related to the agenda's home files."
-  :group 'IDEmacs-Agenda)
-
-(defconst idemacs-home-default-path
-  "~/.emacs.d/IDEmacs/OrgFiles/Home.org"
-  "Hold the default path for the home org file.
-This should be treated as a constant and never changed.")
-
-(defconst idemacs-home-default-template
-  "#+CATEGORY: Home\n\n* Projects\n* Errands\n* Chores\n"
-  "Default string to be written to the file `idemacs-home-path'.
-This should be treated as a constant and never changed.")
-
-(defcustom idemacs-home-path idemacs-home-default-path
-  "The path to an org file for home tasks."
-  :type 'string
-  :group 'IDEmacs-Home)
-
-(defcustom idemacs-home-template idemacs-home-default-template
-  "A format string that will be written to the home file."
-  :type 'string
-  :group 'IDEmacs-Home)
-
-(defun idemacs/home-set-path (file)
-  "Set `idemacs-home-path' to (FILE)."
-  (interactive "FSelect a path: ")
-  (if (not (file-exists-p file))
-      (idemacs/helper-create-file file idemacs-home-template))
-  (setq idemacs-home-path file)
-  (message "Home path set to: %s" idemacs-home-path))
-
-(defun idemacs/home-reformat-file ()
-  "Clears the file at `idemacs-home-path'.
-Writes the `idemacs-home-template' to the file."
-  (interactive)
-  (if (y-or-n-p (format "Would you like to reformat %s? " idemacs-home-path))
-      (progn (with-temp-buffer
-	       (write-region idemacs-home-template nil idemacs-home-path)
-	       (save-buffer)
-	       (kill-buffer))
-	     (message "%s was reformated" idemacs-home-path))
-      (message "%s was not reformated" idemacs-home-path)))
-
-;; idemacs/refile
-(defgroup IDEmacs-Refile nil
-  "This is a subgroup of `IDEmacs' it contains all info regarding home tasks."
-  :group 'IDEmacs)
-
-(defconst idemacs-refile-default-path
-  "~/.emacs.d/IDEmacs/OrgFiles/Refile.org"
-  "The default path for the refile org file.
-This should be treated as a constant and never changed.")
-
-(defconst idemacs-refile-default-template
-  "#+CATEGORY: Completed\n\n* School\n* Home\n* Personal\n* Work\n* Other\n"
-  "The default template for the refile org file.
-This should be treated as a constant and never changed.")
-
-(defcustom idemacs-refile-path idemacs-refile-default-path
-  "The path to the refile org file."
-  :type 'string
-  :group 'IDEmacs-Refile)
-
-(defcustom idemacs-refile-template idemacs-refile-default-template
-  "A format string that will be written to the refile file."
-  :type 'string
-  :group 'IDEmacs-Refile)
-
-(defun idemacs/refile-set-path (file)
-  "Set `idemacs-refile-path' to (FILE)."
-  (interactive "FSelect a path: ")
-  (if (not (file-exists-p file))
-      (my-create-file file idemacs-refile-template))
-  (setq idemacs-refile-path file)
-  (message "Home path set to: %s" idemacs-refile-path))
-
-(defun idemacs/refile-reformat-file ()
-  "Clears the file at `idemacs-refile-path'.
-Writes the `idemacs-refile-template' to the file."
-  (interactive)
-  (if (y-or-n-p "Would you like to reformat the Home file? ")
-      (progn (with-temp-buffer
-	       (write-region idemacs-refile-template nil idemacs-refile-path)
-	       (save-buffer)
-	       (kill-buffer))
-	     (message "Refile file reformated"))
-      (message "Refile file was not reformated")))
-
-(defcustom idemacs-agenda-file-list (list idemacs-home-path idemacs-personal-path idemacs-school-path)
-  "List of files to be used as agenda files."
-  :type (list 'string)
-  :group 'IDEmacs-Agenda)
 
 ;; Org agenda views
 (defun idemacs/daily-quest ()
@@ -240,6 +90,7 @@ Writes the `idemacs-refile-template' to the file."
     ((agenda
       ""
       ((org-agenda-files idemacs-agenda-file-list)
+       (add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
        (org-agenda-span 'day)
        (org-todo-keywords-for-agenda '("TODO" "ASSIGNED" "CURRENT"))
        (org-done-keywords-for-agenda '("DONE" "TURNED-IN"))
@@ -248,22 +99,22 @@ Writes the `idemacs-refile-template' to the file."
        (org-agenda-deadline-leaders '("Deadline:" "In %1d d." "%1d d. ago"))
        (org-agenda-prefix-format '((agenda . "  %i  %s ")))
        (org-super-agenda-groups
-	'((:name " 󰟙  Quests  󰟙  "
-		 :todo ("TODO" "ASSIGNED")
-		 :order 1)
-	  (:name " 󰼆  Tracked  󰼆  "
+       '((:name " 󰼈   Quests  󰼈  " 
+		:todo ("TODO" "ASSIGNED")
+		:order 1)
+	 (:name " 󰼆  Tracked  󰼆  "
 		:todo ("CURRENT")
 		:order 3)
-	  (:name " 󱋻  Completed  󱋻  "
-		 :regexp "CLOSED:"
-		 :order 4)
-	  (:name " 󰼈  Side Quests  󰼈  "
-		 :todo nil
-		 :order 2)
-	  (:discard (:anything t)))))))))
+	 (:name " 󱋻  Completed  󱋻  "
+		:regexp "CLOSED:"
+		:order 4)
+	 (:name "    Side Quests     "
+		:todo nil
+		:order 2)
+	 (:discard (:anything t)))))))))
 
 (defun idemacs/school-quest ()
- "Hold the school quest view for the agenda."
+  "Hold the school quest view for the agenda."
   '("s" "School Agenda"
     ((agenda
       ""
@@ -276,9 +127,9 @@ Writes the `idemacs-refile-template' to the file."
        (org-agenda-deadline-leaders '("Due:" "In %1d d." "%1d d. ago"))
        (org-agenda-prefix-format '((agenda . "  %i %s %t ")))
        (org-super-agenda-groups
-	'((:name "󱉟  Projects  󱉟  "
+	'((:name " 󱉟  Projects  󱉟  "
 		 :tag "project")
-	  (:name "  Assignments    "
+	  (:name "   Assignments    "
 		 :tag "homework")
 	  (:name "   Labs    "
 		 :tag "lab")
@@ -286,10 +137,10 @@ Writes the `idemacs-refile-template' to the file."
 		 :tag "exam")
 	  (:name " 󰋀  Classes 󰋀   "
 		 :tag "class")
-	  (:discard (:anything t)))))))))
+	 (:discard (:anything t)))))))))
 
 (defun idemacs/agenda-view ()
- "Hold the idemacs agenda view for the agenda."
+  "Hold the idemacs agenda view for the agenda."
   '("a" "IDEmacs Agenda"
     ((agenda
       ""
@@ -297,29 +148,32 @@ Writes the `idemacs-refile-template' to the file."
        (org-agenda-span 'day)
        (org-todo-keywords-for-agenda '("TODO" "ASSIGNED" "CURRENT"))
        (org-done-keywords-for-agenda '("DONE" "TURNED-IN"))
+       (org-todo-keywords
+	'((sequence "TODO" "IN-PROGRESS" "WAITING" "|" "DONE" "CANCELED")
+	  (sequence "ASSIGNED" "CURRENT" "|" "TURNEDIN")))
        (org-agenda-time-grid nil)
        (org-agenda-overriding-header "          IDEmacs Agenda         ")
        (org-agenda-prefix-format '((agenda . "  %i %s %t ")))
        (org-super-agenda-unmatched-name " Misc  ")
        (org-super-agenda-groups
 	'((:name "    Overdue     "
-		 :deadline past
-		 :order 0)
-	  (:name " 󱈸  Today  󱈸  "
-		 :deadline today
-		 :order 1)
-	  (:name " 󱆀   School  󱆀   "
-		 :tag "school"
-		 :order 2)
-	  (:name "    Home     "
-		 :tag "home"
-		 :order 2)
-	  (:name "    Personal     "
-		 :tag "personal"
-		 :order 2)
-	  (:name " 󰝮   Random  󰝮   "
-		 :not (:and (:tag ("school" "home" "personal"))))
-	  (:discard (:anything t)))))))))
+		:deadline past
+		:order 0)
+	 (:name " 󱈸  Today  󱈸  "
+		:deadline today
+		:order 1)
+	 (:name " 󱆀   School  󱆀   "
+		:tag "school"
+		:order 2)
+	 (:name "    Home     "
+	       :tag "home"
+	       :order 2)
+	 (:name "    Personal     "
+		:tag "personal"
+		:order 2)
+	(:name " 󰝮   Random  󰝮   "
+	       :not (:and (:tag ("school" "home" "personal"))))
+	(:discard (:anything t)))))))))
 
 (defun idemacs/view-daily-quest ()
   "This function is used to view the daily quest."
@@ -340,6 +194,12 @@ Writes the `idemacs-refile-template' to the file."
     (org-agenda nil "a")))
 
 ;; Org agenda capture templates
+(defun idemacs/capture-school-class ()
+  "This function is used to capture class information."
+  (interactive)
+  (let ((org-capture-templates (doct (list (idemacs/capture-school-template)))))
+    (org-capture nil "sc")))
+
 (defun idemacs/capture-school-template ()
   "A list to hold the capture templates for school tasks."
   '("School Work" :keys "s"
@@ -494,11 +354,16 @@ Writes the `idemacs-refile-template' to the file."
        ":LOCATION: %^{Location}"
        ":END:")))))
 
-(defun idemacs/capture-school-class ()
-  "This function is used to capture class information."
-  (interactive)
-  (let ((org-capture-templates (doct (list (idemacs/school-capture-template)))))
-    (org-capture nil "sc")))
+(defun idemacs/capture-sidebar-entries ()
+  "This function is used to create the capture templates for the sidebar."
+  '("Sidebar" :keys "b"
+    :file idemacs-sidebar-file
+    :children
+    (("header" :keys "h"
+      :template ("** %^{Header}"))
+     ("link" :keys "l"
+      :template ("*** %(idemacs/sidebar-format-capture-link)")))))
+
 
 ;; Agenda Tags
 (defun idemacs/agenda-update-org-tag-alist ()
@@ -522,13 +387,6 @@ Writes the `idemacs-refile-template' to the file."
   :type '(repeat 'string)
   :set 'idemacs/agenda-set-tag-alist
   :group 'IDEmacs-Agenda)
-
-;; Interactive Functions
-
-
-
-
-
 
 ;; Helper Functions
 (defun idemacs/agenda-link-file ()
@@ -658,14 +516,6 @@ the user to enter task to projects of the file."
     (setq choice (completing-read "Select project: " projects))
     (goto-char (point-min))
     (search-forward choice)))
-
-(defun idemacs/agenda-keybinds ()
-  "This holds the keybinds that interact with 'org-mode' and 'org-agenda'.
-This should be loaded after 'org-mode'."  
-  (define-key org-agenda-mode-map (kbd "RET") 'org-agenda-open-link)
-  (define-key global-map (kbd "M-I a d") 'idemacs/view-daily-quest)
-  (define-key global-map (kbd "M-I a s") 'idemacs/view-school-agenda)
-  (define-key global-map (kbd "M-I a a") 'idemacs/view-agenda))
 
 (provide 'IDEmacs-agenda)
 ;;; IDEmacs-agenda.el ends here
