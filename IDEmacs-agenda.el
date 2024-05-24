@@ -15,6 +15,7 @@
 ;;; Code:
 ;required packages and set up
 (require 'org-capture)
+(require 'IDEmacs-faces)
 (use-package org
   :init (setq inhibit-compacting-font-caches t)
   :hook

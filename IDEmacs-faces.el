@@ -90,19 +90,22 @@
   "Level 8 face for the sidebar."
   :group 'IDEmacs-faces)
 
+
+(idemacs/helper-make-face 'IDEmacs-sidebar-default :foreground idemacs-beige :height 100)
+(idemacs/helper-make-face 'IDEmacs-sidebar-link :foreground idemacs-yellow :height 100)
+(idemacs/helper-make-face 'IDEmacs-sidebar-drawer :foreground idemacs-red :height 100)
+(idemacs/helper-make-face 'sidebar-lvl-1 :foreground idemacs-blue :height 110)
+(idemacs/helper-make-face 'sidebar-lvl-2 :inherit 'sidebar-lvl-1)
+(idemacs/helper-make-face 'sidebar-lvl-3 :inherit 'sidebar-lvl-1)
+(idemacs/helper-make-face 'sidebar-lvl-4 :inherit 'sidebar-lvl-1)
+(idemacs/helper-make-face 'sidebar-lvl-5 :inherit 'sidebar-lvl-1)
+(idemacs/helper-make-face 'sidebar-lvl-6 :inherit 'sidebar-lvl-1)
+(idemacs/helper-make-face 'sidebar-lvl-7 :inherit 'sidebar-lvl-1)
+(idemacs/helper-make-face 'sidebar-lvl-8 :inherit 'sidebar-lvl-1)
+
 (defun idemacs/faces-sidebar-apply ()
   "Apply the sidebar faces."
-  (idemacs/helper-make-face 'IDEmacs-sidebar-default :foreground idemacs-beige :height 100)
-  (idemacs/helper-make-face 'IDEmacs-sidebar-link :foreground idemacs-yellow :height 100)
-  (idemacs/helper-make-face 'IDEmacs-sidebar-drawer :foreground idemacs-red :height 100)
-  (idemacs/helper-make-face 'sidebar-lvl-1 :foreground idemacs-blue :height 110)
-  (idemacs/helper-make-face 'sidebar-lvl-2 :inherit 'sidebar-lvl-1)
-  (idemacs/helper-make-face 'sidebar-lvl-3 :inherit 'sidebar-lvl-1)
-  (idemacs/helper-make-face 'sidebar-lvl-4 :inherit 'sidebar-lvl-1)
-  (idemacs/helper-make-face 'sidebar-lvl-5 :inherit 'sidebar-lvl-1)
-  (idemacs/helper-make-face 'sidebar-lvl-6 :inherit 'sidebar-lvl-1)
-  (idemacs/helper-make-face 'sidebar-lvl-7 :inherit 'sidebar-lvl-1)
-  (idemacs/helper-make-face 'sidebar-lvl-8 :inherit 'sidebar-lvl-1)
+  (interactive)
   (face-remap-add-relative 'default 'IDEmacs-sidebar-default)
   (face-remap-add-relative 'org-link 'IDEmacs-sidebar-link)
   (face-remap-add-relative 'org-drawer 'IDEmacs-sidebar-drawer)
@@ -113,10 +116,9 @@
   (face-remap-add-relative 'org--level-5 'sidebar-lvl-5)
   (face-remap-add-relative 'org--level-6 'sidebar-lvl-6)
   (face-remap-add-relative 'org--level-7 'sidebar-lvl-7)
-  (face-remap-add-relative 'org--level-8 'sidebar-lvl-8)
-  )
+  (face-remap-add-relative 'org--level-8 'sidebar-lvl-8))
 
-
+(add-hook 'idemacs-sidebar-mode-hook 'idemacs/faces-sidebar-apply)
 
 
 (provide 'IDEmacs-faces)

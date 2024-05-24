@@ -122,6 +122,7 @@
 	  (IDEmacs--agenda-setup)
 	  (IDEmacs--gui-setup)
 	  (IDEmacs--keybimds)
+	  (idemacs/faces-sidebar-apply)
 	  ;; Set up the theme
 	  (IDEmacs--enable-theme)
 	  ;; Set up the Default view

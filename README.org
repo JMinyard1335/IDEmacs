@@ -2,18 +2,10 @@
 #+AUTHOR: Jachin Minyard
 
 * Introduction
-  IDEmacs is a collection of tools for Emacs that provide a more modern feel to Emacs. The current version of IDEmacs is 0.0.1 and focuses on the creation of an org files to store the task I deal with in my work flow. This version also includes a sidebar option that reads an org file that the user can populate with links to different files and views.
-
+  
 * Installation
-  Download the files into a folder. add the folder to the Emacs load path. After this you can use require or use-package to load it.
+ 
 ** Requirements
-   This Package requires the following packages to be installed:
-   - org-super-agenda
-   - org-modern
-   - olivetti 
-   - doct
-   - nerd-icons
-     - having a nerd font on your system is recommended for this package to work correctly.
      
 * IDEmacs
   This is the main package and is in charge of setting up the IDEmacs-mode. This mode is a minor mode that wraps the other packages. While this package is not required to use the features found in the other packages. it helps link there functions together into a more cohesive configuration. idemacs-mode defines a keymap that can be used to set up Sudo global keybinds as idemacs-mode is a global mode and work in all buffers once it is activated.
@@ -53,9 +45,9 @@
     #+begin_src emacs-lisp
       (define-key IDEmacs-mode-map (kbd "C-c C-s") 'idemacs/sidebar-open)
     #+end_src
-
+    
 * IDEmacs Orgfiles
-  IDEmacs-orgfiles.el is a package that holds some custom variables to help with the creation of org files. The main function is the setting and the reformating of these org files. The org files defined by default are used in the IDEmacs-mode org-capture-template setup. This file contains several groups one for each of the default org files. This is to make it eaiser to customize the groups through the customize=group interface.
+  IDEmacs-orgfiles.el is a package that holds some custom variables to help with the creation of org files. The main function is the setting and the reformating of these org files. The org files defined by default are used in the IDEmacs-mode org-capture-template setup. This file contains several groups one for each of the default org files. This is to make it eaiser to customize the groups through the customize-group interface.
 ** Variables:
 *** idemacs-personal-path
     This is the file and path to an org file that is used to store captured personal tasks. While you can use setq on this vaule it is recommended to set it using the idemacs/personal-set-path function.
@@ -141,7 +133,7 @@
     This is a list of tags that are added to the list of tags that are used in the agenda views. It can be set in the following way:
     #+begin_src emacs-lisp
 	    (setq idemacs--agenda-tag-list '(("name" . ?n)
-					     ("school" . ?s)))
+					     ("work" . ?w)))
     #+end_src
     
 ** Functions
@@ -157,25 +149,49 @@
     This function will capture a sidebar entry and add it to the sidebar org file.
     
 * IDEmacs Sidebar
+  The emacs side bar is a window that holds links to different files and agenda views. it acts as a mini planner that can be used to navigate to different parts of the users workflow. At the current state the user is responsiable for populating the org file with links tho I have provided a few links to get the user started.
 ** Variables
 *** idemacs-sidebar-file
     This is the file and path to an org file that is used to store sidebar links. While you can use setq on this vaule it is recommended to set it using the idemacs/sidebar-set-path function.
     
 *** idemacs-sidebar-template
-    
+    This is the sting that will be written to the sidebar file when it is created or reformated.
+    #+begin_src emacs-lisp
+      (setq idemacs-sidebar-template
+	    "* Schedules:\n [[sidebar:daily-agenda][Daily Quest]]\n [[sidebar:school-agenda][School Agenda]]\n\n* Config\n [[IDEmacs_file:~/.emacs.d/init.el][Init File]]\n")
+    #+end_src
     
 *** idemacs-sidebar-link-name
-    
-    
+    This can be set to change the name of the link type. That would be in '[[link-type:query|files|format] [name]]'
+    #+begin_src emacs-lisp
+      (setq idemacs-sidebar-link-name "sidebar")
+    #+end_src
+
 *** idemacs-sidebar-width
     
-    
+    Determines how wide the sidebar will be.
+    #+begin_src emacs-lisp
+      (setq idemacs-sidebar-width 30)
+    #+end_src
+
 *** idemacs-sidebar-lighter
-    
-    
+    Determines the lighter for the sidebar. A lighter is the symbol that shows up on the mode line to determine which minor modes are active.
+    #+begin_src emacs-lisp
+      (setq idemacs-sidebar-lighter " Sidebar")
+    #+end_src
+
 ** Functions
 *** idemacs/sidebar-set-path
+    The idemacs/sidebar-set-path function is used to set the path to the sidebar org file. Use this over the standard setq. This function will create the file if it does not exisit and write the template to the file.
+    #+begin_src emacs-lisp
+      (idemacs/sidebar-set-path "~/.emacs.d/IDEmacs/OrgFiles/Sidebar.org")
+    #+end_src
+
 *** idemacs/sidebar-reformat-file
+    This function will wipe the sidebar file so be careful when using it. After the file has been wipped it will have the idemacs-sidebar-template written to it.
 *** idemacs/sidebar-open
+    This opens the sidebar and enables idemacs-sidebar-mode.
 *** idemacs/sidebar-toggle
+    Turns the sidebar on and off.
 *** idemacs/sidebar-insert-link
+    Inserts a new link below the pont.
