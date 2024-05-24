@@ -19,6 +19,7 @@
 (add-to-list 'load-path (file-name-directory "~/Documents/IDEmacs/"))
 (require 'IDEmacs-helpers)
 (require 'IDEmacs-faces)
+(require 'IDEmacs-gui-setup)
 (require 'IDEmacs-orgfiles)
 (require 'IDEmacs-user)
 (require 'IDEmacs-agenda)
@@ -28,36 +29,6 @@
 (defgroup IDEmacs nil
   "This is my custom group"
   :group 'convenience)
-
-(defun my-package-theme-list ()
-  "Return a list of all the themes available in the package."
-  (mapcar #'symbol-name
-          (custom-available-themes)))
-
-(defcustom IDEmacs-theme 'wombat
-  "The theme to use for IDEmacs."
-  :type `(choice ,@(mapcar (lambda (theme) `(const ,theme)) (my-package-theme-list)))
-  :group 'IDEmacs)
-
-(defcustom IDEmacs-font-size 120
-  "The font size to use for IDEmacs."
-  :type 'integer
-  :group 'IDEmacs)
-
-(defcustom IDEmacs-line-numbers t
-  "Whether or not to display line numbers in Programing modes."
-  :type 'boolean
-  :group 'IDEmacs)
-
-(defcustom IDEmacs-sidebar-on-startup t
-  "Whether or not to open the sidebar on startup."
-  :type 'boolean
-  :group 'IDEmacs)
-
-(defcustom IDEmacs-agenda-on-startup t
-  "Whether or not to open the agenda on startup."
-  :type 'boolean
-  :group 'IDEmacs)
 
 (defvar IDEmacs-mode-map (make-sparse-keymap)
   "Keymap for IDEmacs mode.")
@@ -122,21 +93,7 @@
 	(list (idemacs/daily-quest)
 	      (idemacs/school-quest)
 	      (idemacs/agenda-view))))
-
-(defun IDEmacs--gui-setup ()
-  (menu-bar-mode -1)
-  (tool-bar-mode -1)
-  (scroll-bar-mode -1)
-  (global-tab-line-mode 1)
-  (display-time-mode 1)
-  (display-battery-mode 1)
-  
-  (set-face-attribute 'default nil :height IDEmacs-font-size)
-  
-  (when IDEmacs-line-numbers
-    (dolist (mode '(prog-mode-hook))
-      (add-hook mode (lambda () (display-line-numbers-mode 1))))))
-
+ 
 (defun IDEmacs--keybimds ()
   "Set up the keybindings for IDEmacs."
   (define-key IDEmacs-mode-map (kbd "C-c C-s") 'idemacs/sidebar-open)
@@ -178,15 +135,14 @@
 	(IDEmacs--revert-display)
 	)
       (setq idemacs-mode nil)
-    )))
+      )))
 
 
 (defun in-capture-buffer-p ()
   "Check if we're in a capture buffer."
   (string-prefix-p "CAPTURE" (buffer-name)))
 	    
-
-
+(define-key global-map [f2] 'idemacs-mode)
 
 (provide 'IDEmacs)
 ;;; IDEmacs.el ends here

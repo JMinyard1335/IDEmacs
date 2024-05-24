@@ -1,5 +1,9 @@
 ;;; IDEmacs-helpers.el --- Helper functions for IDEmacs -*- lexical-binding: t -*-
 
+;; Author Jachin Minyard
+;; Maintainer: Jachin Minyard
+;; Version: 0.0.1
+
 ;;; Commentary:
 
 ;; Helper functions for IDEmacs.

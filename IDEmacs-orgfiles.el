@@ -1,5 +1,9 @@
 ;;; IDEmacs-orgfiles.el --- Agenda configuration for IDEmacs
 
+;; Author: Jachin Minyard
+;; Maintainer: Jachin Minyard
+;; version: 0.0.1
+
 ;;; Commentary:
 
 ;; This file contains all the configuration for the agenda files in IDEmacs.

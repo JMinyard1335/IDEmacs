@@ -6,11 +6,12 @@
 
 ;;; Commentary:
 
-;; This package provides a sidebar for org-mode files.
+;; This package provides a sidebar for IDEmacs.
 
 ;;; Code:
 (require 'subr-x)
 (require 'ob-shell)
+(require 'IDEmacs-faces)
 
 (defgroup IDEmacs-sidebar nil
   "Sidebar for org-mode files."
@@ -42,19 +43,19 @@
   :type 'string
   :group 'IDEmacs-org-sidebar)
 
-(org-link-set-parameters
- idemacs-sidebar-link-name
- :follow #'idemacs/sidebar-follow-link)
-
 (defvar idemacs-sidebar-prev-local-keymap nil
   "Buffer local var to store the previous keymap.")
-
-(make-variable-buffer-local 'idemacs-sidebar-prev-local-keymap)
 
 (defvar idemacs-sidebar--async-update-in-progress nil
   "Flag to indicate that an async update is in progress.")
 
 (make-variable-buffer-local 'idemacs-sidebar--async-update-in-progress)
+
+(make-variable-buffer-local 'idemacs-sidebar-prev-local-keymap)
+
+(org-link-set-parameters
+ idemacs-sidebar-link-name
+ :follow #'idemacs/sidebar-follow-link)
 
 ;;;###autoload
 (define-minor-mode idemacs-sidebar-mode
@@ -63,6 +64,7 @@
   :init-value nil
   (if idemacs-sidebar-mode
       (progn
+	(org-cycle '(2))
 	(setq buffer-read-only t)
 	;; Switch the keymap
 	(setq idemacs-sidebar-prev-local-keymap (current-local-map))
@@ -72,14 +74,11 @@
 	    (local-set-key (kbd "RET") #'org-open-at-point))
 	;; Updates the sidebar
 	(idemacs/sidebar-update))
-    (if idemacs-sidebar--async-update-in-progress
-	(user-error "Update in progress, please wait."))
     ;; Return to the previous keymap 
     (use-local-map idemacs-sidebar-prev-local-keymap)
     ;; Turn off read only
     (setq buffer-read-only nil)))
 
-;; all mine
 (defun idemacs/sidebar-set-path (file)
   "Set `idemacs-personal-path' to (FILE)."
   (interactive "FSelect a path: ")
@@ -114,8 +113,11 @@
 		  (cons 'window-parameters
 			(list
 			 (cons 'no-delete-other-windows t)
-			 (cons 'no-other-window t)
-			 (cons 'mode-line-format nil)))))))
+			 (cons 'no-other-window nil)
+			 (cons 'tab-line-format 'none)
+			 (cons 'mode-line-format 'none)
+			 (cons 'header-line-format 'none))))))
+	  (idemacs/faces-sidebar-apply))
 	(select-window sidebar-window)
 	(idemacs-sidebar-mode))
     (message (format " %s does not exisit." idemacs-sidebar-file))))
@@ -149,45 +151,6 @@ Bound by default to `M-I s'."
 	    (when (equal (window-buffer window) buffer)
 	      (throw 'found window))))))))
 
-(defun idemacs/sidebar-format-capture-link ()
-  "Creates the link to store in the sidebar with a capture template."
-  (format "[[%s:%s][%s]]"
-	  (idemacs/sidebar-get-file-type)
-	  (read-file-name "File: ")
- 	  (read-string "Label ")))
-	  
-(defun idemacs/sidebar-get-file-type ()
-  "This function is used to get the file type for the link."
-  (let ((file-type (completing-read "Select file type: "
-				    (list '"IDEmacs_file" idemacs-sidebar-link-name))))
-    (cond ((string= file-type "IDEmacs_file") "IDEmacs_file")
-	  ((string= file-type idemacs-sidebar-link-name) idemacs-sidebar-link-name))))
-
-(defun idemacs/sidebar-insert-link ()
-  "Insert a link into the sidebar."
-  (interactive)
-  (let ((org-capture-templates (doct (list (idemacs/capture-sidebar-entries))))
-	(window (get-buffer-window (current-buffer))))
-    (setq buffer-read-only nil)
-    (set-window-parameter window 'window-side nil)
-    (org-capture 0 "bl")
-    (set-window-parameter window 'window-side 'left)
-    (setq buffer-read-only t)))
-	 
-;; -------------------------------------------------------------------
-(defun idemacs/sidebar-show-matches (query file header)
-  "Shows the (HEADER) in the (FILE) that match the (QUERY)"
-  (let ((org-agenda-overriding-header (concat header "\n"))
-	(org-agenda-files file))
-    (progn
-      (kill-buffer "*Org Agenda(a)*")
-      (org-tags-view nil query)
-      (rename-buffer "*Org Agenda(a)*"))))
-
-(defun idemacs/sidebar-count-items (query files)
-  "Count the number of items the (QUERY) in the (FILES)."
-  (length (org-map-entries nil query files)))
-
 (defun idemacs/sidebar-agenda-day-view ()
   "Change to the other window close it and open `IDEmacs/view-daily-quest'."
   (if (get-buffer "*Org Agenda*")
@@ -208,14 +171,63 @@ Bound by default to `M-I s'."
     (other-window 1)
     (idemacs/view-school-agenda)))
 
+(defun idemacs/sidebar-format-capture-link ()
+  "Creates the link to store in the sidebar with a capture template."
+  (format "[[%s:%s][%s]]"
+	  (idemacs/sidebar-get-file-type)
+	  (read-file-name "File: ")
+ 	  (read-string "Label ")))
+	  
+(defun idemacs/sidebar-get-file-type ()
+  "This function is used to get the file type for the link."
+  (let ((file-type (completing-read "Select file type: "
+				    (list '"IDEmacs_file" idemacs-sidebar-link-name))))
+    (cond ((string= file-type "IDEmacs_file") "IDEmacs_file")
+	  ((string= file-type idemacs-sidebar-link-name) idemacs-sidebar-link-name))))
+
+(defun idemacs/sidebar-insert-link ()
+  "Insert a link into the sidebar."
+  (interactive)
+  (let ((org-capture-templates (doct (list (idemacs/capture-sidebar-entries))))
+	(window (get-buffer-window (current-buffer))))
+    (setq buffer-read-only nil)
+    (setq buffer-read-only nil)
+    (set-window-parameter window 'window-side nil)
+    (org-capture 0 "bl")
+    (set-window-parameter window 'window-side 'left)
+    (setq buffer-read-only t)))
+
+(defun idemacs/sidebar-count-items (query files)
+  "Count the number of items the (QUERY) in the (FILES)."
+  (length (org-map-entries nil query files)))
+
+(defun idemacs/sidebar-show-matches (query file header)
+  "Shows the (HEADER) in the (FILE) that match the (QUERY)"
+  (let ((org-agenda-overriding-header (format " %s " header))
+	(org-agenda-files (list file)))
+    (message "%s %s" query file)
+    (progn
+      (when (eq (current-buffer) (get-buffer "Sidebar.org"))
+	(other-window 1))
+      (when (get-buffer "*Org Agenda*")
+	(kill-buffer "*Org Agenda*"))
+      (org-tags-view nil query)
+      (rename-buffer "*Org Agenda*"))))
+
 (defun idemacs/sidebar-follow-link (path)
+  "Follow the link at (PATH).
+The path should be in the form of '[[sidebar:QUERY|FILES|FMT][DESCRIPTION]]'
+where QUERY is the org-agenda query, FILES is the list of files to search."
   (let* ((link (org-element-context))
-	 (link-name (org-element-property :raw-link link))
-	 (fields (split-string path "|"))
+	 (link-name (org-element-property :raw-value path))
+      	 (fields (split-string path "|"))
 	 (query (nth 0 fields))
 	 (files (nth 1 fields))
-	 (fmt (nth 2 fields)))
-    (message "query: %s, files: %s, fmt: %s" query files fmt)
+	 (fmt (nth 2 fields))
+	 (description
+	  (buffer-substring
+ 	   (org-element-property :contents-begin (org-element-context))
+   	   (org-element-property :contents-end (org-element-context)))))
     (cond
      ((string-equal query "daily-agenda")
       (idemacs/sidebar-agenda-day-view))
@@ -223,27 +235,9 @@ Bound by default to `M-I s'."
       (idemacs/sidebar-agenda-school-view))
      ((not fmt)
       (other-window 1)
-      (org-agenda-show-matches query files description))
-     )))
-      
-
-  ;; (let* ((link (org-element-context))
-  ;; 	 (query (string-trim (nth 0 (split-string path "[]|]"))))
-  ;; 	 (files (nth 1 (split-string path "[]|]")))
-  ;; 	 (files (if (> (length files) 0) (split-string files) org-agenda-files))
-  ;; 	 (fmt (nth 2 (split-string path "[]|]")))
-  ;; 	 (description (buffer-substring
-  ;; 		       (org-element-property :contains-begin (org-element-context))
-  ;; 		       (org-element-property :contains-end (org-element-context)))))
-  ;;   (message "query: %s, files: %s, fmt: %s, description: %s" query files fmt description)
-  ;;   (cond
-  ;;    ((string-equal query "daily-agenda")
-  ;;     (idemacs/sidebar-agenda-day-view))
-  ;;    ((not fmt)
-  ;;     (other-window 1)
-  ;;     (org-agenda-show-matches query files description))
-  ;;    ((and fmt (> (length fmt) 0))
-  ;;     (idemacs/sidebar-update-link link)))))
+      (idemacs/sidebar-show-matches query files description))
+     ((and fmt (> (length fmt) 0))
+      (idemacs/sidebar-update-link link)))))
 
 (defun idemacs/sidebar-update-link (link)
   (let* ((path (org-element-property :path link))
@@ -267,12 +261,15 @@ Bound by default to `M-I s'."
 	    (set-buffer-modified-p modified))))))
 
 (defun idemacs/sidebar-update-all ()
+  "Updates all links in the buffer.
+This will update the count if the link has a format string."
   (idemacs/sidebar-clear-all)
   (org-element-map (org-element-parse-buffer) 'link
     (lambda (link)
       (when (string= (org-element-property :type link) idemacs-sidebar-link-name)
 	(idemacs/sidebar-update-link link))))
   (redisplay t))
+;; -------------------------------------------------------------------
 
 (defun idemacs/sidebar-clear-link (link)
   (let* ((path (org-element-property :path link))
@@ -301,8 +298,8 @@ Bound by default to `M-I s'."
   (interactive)
   (dolist (buffer (buffer-list (current-buffer)))
     (with-current-buffer buffer
-      (if (bound-and-true-p IDEmacs-sidebar-mode)
-	  (org-agenda-dashboard-update-all)))))
+      (if (bound-and-true-p idemacs-sidebar-mode)
+	  (idemacs/sidebar-update-all)))))
 
 (defun idemacs/sidebar-parse-keymap ()
   (let ((map (make-sparse-keymap)))

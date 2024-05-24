@@ -1,10 +1,10 @@
 ;;; IDEmacs-agenda.el --- Agent for IDEmacs -*- lexical-binding: t -*-
+
 ;; Author: Jachin Minyard
 ;; Maintainer: Jachin Minyard
 ;; Version: 0.0.1
 ;; Package-Requires: ((doct) (org-super-agenda) (org-modern))
 ;; Homepage:
-
 
 ;;; Commentary:
 
@@ -22,7 +22,7 @@
   (org-mode . visual-line-mode)
   :config
   (add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
-  (setq org-agenda-window-setup 'only-window)
+  (setq org-agenda-window-setup 'current-window)
   (setq org-log-done '('time))
   (setq org-todo-keywords
 	'((sequence "TODO" "IN-PROGRESS" "WAITING" "|" "DONE" "CANCELED")
@@ -33,7 +33,9 @@
   (setq org-deadline-warning-days 7)
   (setq org-popup-calendar-for-date-prompt nil)
   (setq org-agenda-hide-tags-regexp ".*")
-  (setq org-adapt-indentation t))
+  (setq org-adapt-indentation t)
+  (setq org-hide-drawer-startup t))
+
 (use-package olivetti
   :ensure t
   :hook

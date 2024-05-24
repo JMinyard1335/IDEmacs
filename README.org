@@ -23,26 +23,31 @@
     #+begin_src emacs-lisp
       (setq IDEmacs-theme 'candyLand)
     #+end_src    
+
 *** IDEmacs-font-size
     This is the font size that is applied when idemas-mode is run.
     #+begin_src emacs-lisp
       (setq IDEmacs-font-size 120)
     #+end_src
+
 *** Idemacs-line-numbers
     If t then line numbers are added to programing modes inside of IDEmacs.
     #+begin_src emacs-lisp
       (setq Idemacs-line-numbers t)
     #+end_src
+
 *** IDEmacs-sidebar-on-startup
     If t then the sidebar is loaded when idemacs-mode is run.
     #+begin_src emacs-lisp
       (setq IDEmacs-sidebar-on-startup t)
     #+end_src
+
 *** IDEmacs-agenda-on-startup
     If t then the agenda is loaded when idemacs-mode is run.
     #+begin_src emacs-lisp
       (setq IDEmacs-agenda-on-startup t)
     #+end_src
+
 *** IDEmacs-mode-map
     This is the keymap that is used in idemacs-mode.
     #+begin_src emacs-lisp
@@ -54,35 +59,43 @@
 ** Variables:
 *** idemacs-personal-path
     This is the file and path to an org file that is used to store captured personal tasks. While you can use setq on this vaule it is recommended to set it using the idemacs/personal-set-path function.
+
 *** idemacs-personal-template
     This is the initial sting that is written to the personal org file when it is created or reformated.
     #+begin_src emacs-lisp
 	    (setq idemacs-personal-template
 		  "#+CATEGORY: Personal\n\n* Projects\n* Family\n* Reminders\n* Goals\n")
     #+end_src
+
 *** idemacs-home-path
     This is the file and path to an org file that is used to store captured home tasks. While you can use setq on this vaule it is recommended to set it using the idemacs/home-set-path function.
+
 *** idemacs-home-template
     This is the initial sting that is written to the home org file when it is created or reformated.
     #+begin_src emacs-lisp
       (setq idemacs-home-template "#+CATEGORY: Home\n\n* Projects\n* Errands\n* Chores\n")
     #+end_src
+
 *** idemacs-school-path
     This is the file and path to an org file that is used to store captured school tasks. While you can use setq on this vaule it is recommended to set it using the idemacs/school-set-path function.
+
 *** idemacs-school-template
     This is the initial sting that is written to the school org file when it is created or reformated.
     #+begin_src emacs-lisp
 	    (setq idemacs-school-template
 		  "#+CATEGORY: School\n\n* Classes\n* Assignments\n* Projects\n* Exams\n* Labs\n")
     #+end_src
+
 *** idemacs-refile--path
     This is the file and path to an org file that is used to store refiled tasks. While you can use setq on this vaule it is recommended to set it using the idemacs/personal-set-path function.
+
 *** idemacs-refile-template
     This is the initial sting that is written to the refile org file when it is created or reformated.
     #+begin_src emacs-lisp
 	    (setq idemacs-refile-template
 		  "#+CATEGORY: Completed\n\n* School\n* Home\n* Personal\n* Work\n* Other\n")
     #+end_src
+
 *** idemacs-agenda-file-list
 
 ** Functions:
@@ -91,49 +104,75 @@
     #+begin_src emacs-lisp
       (idemacs/personal-set-path "~/.emacs.d/IDEmacs/OrgFiles/Personal.org")
     #+end_src
+
 *** idemacs/personal-reformat-file
     The idemacs/personal-reformat-file function is used to reformat the personal org file. This function will write the template to the file.
+
 *** idemacs/home-set-path
     The idemacs/personal-set-path function is used to set the path to the personal org file. Use this over the standard setq. This function will create the file if it does not exisit and write the template to the file.
     #+begin_src emacs-lisp
       (idemacs/home-set-path "~/.emacs.d/IDEmacs/OrgFiles/Home.org")
     #+end_src    
+
 *** idemacs/home-reformat-file
     The idemacs/home-reformat-file function is used to reformat the home org file. This function will write the template to the file
+
 *** idemacs/school-set-path
     The idemacs/school-set-path function is used to set the path to the school org file. Use this over the standard setq. This function will create the file if it does not exisit and write the template to the file.
     #+begin_src emacs-lisp
       (idemacs/school-set-path "~/.emacs.d/IDEmacs/OrgFiles/School.org")
     #+end_src
+
 *** idemacs/school-reformat-path
     The idemacs/school-reformat-path function is used to reformat the school org file. This function will write the template to the file.
+
 *** idemacs/refile-set-path
     The idemacs/refile-set-path function is used to set the path to the refile org file. Use this over the standard setq. This function will create the file if it does not exisit and write the template to the file.
     #+begin_src emacs-lisp
       (idemacs/refile-set-path "~/.emacs.d/IDEmacs/OrgFiles/Refile.org")
     #+end_src
+
 *** idemacs/refile-reformat-file
     The idemacs/refile-reformat-file function is used to reformat the refile org file. This function will write the template to the file.
 * IDEmacs Agenda
   IDEmacs-agenda.el is a package that customizes the org-agenda to have different views built to work with the org files created by IDEmacs-orgfiles.el. The main function is the creation of the different views that are used in the IDEmacs-mode, and the capturing of information to the org files.  
 ** Variables
 *** idemacs--agenda-tag-list
+    This is a list of tags that are added to the list of tags that are used in the agenda views. It can be set in the following way:
+    #+begin_src emacs-lisp
+	    (setq idemacs--agenda-tag-list '(("name" . ?n)
+					     ("school" . ?s)))
+    #+end_src
     
 ** Functions
 *** idemacs/view-daily-quest
+    This function will pull up an agenda view in which the users daily tasks are displayed.
 *** idemacs/view-school-agenda
+    This function will pull up an agenda view in which the users school tasks are displayed. 
 *** idemacs/view-agenda
+    This function will pull up an agenda view in which general task are displayed.
 *** idemacs/capture-school-class
+    This function will capture a school class and add it to the school org file.
 *** idemacs/capture-sidebar-entries
-
+    This function will capture a sidebar entry and add it to the sidebar org file.
+    
 * IDEmacs Sidebar
 ** Variables
 *** idemacs-sidebar-file
+    This is the file and path to an org file that is used to store sidebar links. While you can use setq on this vaule it is recommended to set it using the idemacs/sidebar-set-path function.
+    
 *** idemacs-sidebar-template
+    
+    
 *** idemacs-sidebar-link-name
+    
+    
 *** idemacs-sidebar-width
+    
+    
 *** idemacs-sidebar-lighter
-
+    
+    
 ** Functions
 *** idemacs/sidebar-set-path
 *** idemacs/sidebar-reformat-file
