@@ -17,6 +17,8 @@
   "Sidebar for org-mode files."
   :group 'IDEmacs)
 
+(defconst idemacs-sidebar-file-default "~/.emacs.d/IDEmacs/OrgFiles/Sidebar.org")
+
 (defcustom idemacs-sidebar-file "~/.emacs.d/IDEmacs/OrgFiles/Sidebar.org"
   "The file to use for the sidebar."
   :type 'string
@@ -139,6 +141,10 @@ Bound by default to `M-I s'."
 	  (idemacs/sidebar-kill)
 	  (idemacs-sidebar-mode -1))
       (idemacs/sidebar-open))))
+
+(defun idemacs/sidebar-swap ()
+  "swaps in between the sidebar and other buffers.")
+
 
 (defun idemacs/sidebar-open-p ()
   "Check if the sidebar is open."

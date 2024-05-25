@@ -96,14 +96,14 @@
  
 (defun IDEmacs--keybimds ()
   "Set up the keybindings for IDEmacs."
-  (define-key IDEmacs-mode-map (kbd "C-c C-s") 'idemacs/sidebar-open)
-  (define-key IDEmacs-mode-map (kbd "C-c C-q") 'idemacs/sidebar-toggle)
+  (define-key IDEmacs-mode-map (kbd "C-c C-s") 'idemacs/sidebar-toggle)
   (define-key IDEmacs-mode-map (kbd "C-c C-a") 'idemacs/view-agenda)
   (define-key IDEmacs-mode-map (kbd "C-c C-t") 'org-capture)
   (define-key IDEmacs-mode-map (kbd "C-;") 'hs-hide-block)
   (define-key IDEmacs-mode-map (kbd "C-'") 'hs-show-block)
   (define-key IDEmacs-mode-map (kbd "C-:") 'hs-hide-all)
-  (define-key IDEmacs-mode-map (kbd "C-\"") 'hs-show-all))
+  (define-key IDEmacs-mode-map (kbd "C-\"") 'hs-show-all)
+  (define-key IDEmacs-mode-map (kbd "C-c s") 'flyspell-correct-word-before-point))
 
 ;;;###autoload
 (define-minor-mode idemacs-mode
@@ -137,7 +137,6 @@
 	)
       (setq idemacs-mode nil)
       )))
-
 
 (defun in-capture-buffer-p ()
   "Check if we're in a capture buffer."

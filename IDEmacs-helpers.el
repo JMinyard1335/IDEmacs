@@ -23,7 +23,7 @@ HH:MM:SS or HH:MM")
   "Creates a file with the name `file' and writes the string `template' to the file."
   (if (y-or-n-p (format "File %s does not exist. Would you like to create it?" file))
       (progn (find-file file)
-	     (idemacs/helper-create-dir)
+	     ;(idemacs/helper-create-dir)
 	     (insert template)
 	     (save-buffer)
 	     (kill-buffer))

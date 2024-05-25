@@ -4,8 +4,25 @@
 * Introduction
   
 * Installation
- 
-** Requirements
+  Download the files into a directory of your chosing. After that add the following code to your configuration file:
+  #+begin_src elisp
+    (require 'package)
+(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+                         ("org" . "https://orgmode.org/elpa/")
+                         ("melpa" . "http://melpa.org/packages/")))
+
+(package-initialize)
+
+(use-package IDEmacs
+  :load-path "~/Documents/IDEmacs/IDEmacs-0.0.1/"
+  :config
+  (idemacs/personal-set-path idemacs-personal-default-path)
+  (idemacs/school-set-path idemacs-school-default-path)
+  (idemacs/home-set-path idemacs-home-default-path)
+  (idemacs/refile-set-path idemacs-refile-default-path)
+  (idemacs/sidebar-set-path idemacs-sidebar-file-default))
+  #+end_src
+  This is the bare minimum needed to get the package set up. Even tho the package is not on melpa the package archives are set because this package uses other packages found on melpa to help with the set up.
      
 * IDEmacs
   This is the main package and is in charge of setting up the IDEmacs-mode. This mode is a minor mode that wraps the other packages. While this package is not required to use the features found in the other packages. it helps link there functions together into a more cohesive configuration. idemacs-mode defines a keymap that can be used to set up Sudo global keybinds as idemacs-mode is a global mode and work in all buffers once it is activated.
@@ -13,7 +30,7 @@
 *** IDEmacs-theme
     This is the theme that is applied when idemas-mode is run.
     #+begin_src emacs-lisp
-      (setq IDEmacs-theme 'candyLand)
+      (setq IDEmacs-theme 'wombat)
     #+end_src    
 
 *** IDEmacs-font-size
