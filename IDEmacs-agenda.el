@@ -24,19 +24,18 @@
   :config
   (add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
   (setq org-agenda-window-setup 'current-window)
+  (setq org-log-into-drawer t)
   (setq org-log-done '('time))
   (setq org-todo-keywords
-	'((sequence "TODO" "IN-PROGRESS" "WAITING" "|" "DONE" "CANCELED")
-	  (sequence "ASSIGNED" "CURRENT" "|" "TURNEDIN")))
-  (setq org-todo-keywords-for-agenda '("TODO" "IN-PROGRESS" "WAITING" "ASSIGNED" "CURRENT"))
-  (setq org-done-keywords-for-agenda '("DONE" "CANCELED" "TURNEDIN"))
-  (setq org-log-into-drawer t)
+	'((sequence "TODO(t)" "IN-PROGRESS(i)" "WAITING(w)" "|" "DONE(d)" "CANCELED(c)")
+	  (sequence "ASSIGNED(A)" "CURRENT(C)" "|" "TURNEDIN(T)")))
+  (setq org-todo-keywords-for-agenda '("TODO(t)" "IN-PROGRESS(i)" "WAITING(w)" "ASSIGNED(A)" "CURRENT(C)"))
+  (setq org-done-keywords-for-agenda '("DONE(d)" "CANCELED(c)" "TURNEDIN(T)"))
   (setq org-deadline-warning-days 7)
-  (setq org-popup-calendar-for-date-prompt nil)
+  (setq org-popup-calendar-for-date-prompt t)
   (setq org-agenda-hide-tags-regexp ".*")
   (setq org-adapt-indentation t)
   (setq org-hide-drawer-startup t))
-
 (use-package olivetti
   :ensure t
   :hook
@@ -86,6 +85,7 @@ The file is opened in the current buffer."
 	(message "%s Not created." file))
     (find-file file)))
 
+
 ;; Org agenda views
 (defun idemacs/daily-quest ()
   "Hold the daily quest view for the agenda."
@@ -95,8 +95,11 @@ The file is opened in the current buffer."
       ((org-agenda-files idemacs-agenda-file-list)
        (add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
        (org-agenda-span 'day)
-       (org-todo-keywords-for-agenda '("TODO" "ASSIGNED" "CURRENT"))
-       (org-done-keywords-for-agenda '("DONE" "TURNED-IN"))
+       (org-todo-keywords
+	'((sequence "TODO(t)" "IN-PROGRESS(i)" "WAITING(w)" "|" "DONE(d)" "CANCELED(c)")
+	  (sequence "ASSIGNED(A)" "CURRENT(C)" "|" "TURNEDIN(T)")))
+       (org-todo-keywords-for-agenda '("TODO(t)" "IN-PROGRESS(i)" "WAITING(w)" "ASSIGNED(A)" "CURRENT(C)"))
+       (org-done-keywords-for-agenda '("DONE(d)" "CANCELED(c)" "TURNEDIN(T)"))
        (org-agenda-time-grid nil)
        (org-agenda-overriding-header "           Daily Quest           ")
        (org-agenda-deadline-leaders '("Deadline:" "In %1d d." "%1d d. ago"))
@@ -123,8 +126,11 @@ The file is opened in the current buffer."
       ""
       ((org-agenda-files (list idemacs-school-path))
        (org-agenda-span 1)
-       (org-todo-keywords-for-agenda '("TODO" "ASSIGNED" "CURRENT"))
-       (org-done-keywords-for-agenda '("DONE" "TURNED-IN"))
+       (org-todo-keywords
+	'((sequence "TODO(t)" "IN-PROGRESS(i)" "WAITING(w)" "|" "DONE(d)" "CANCELED(c)")
+	  (sequence "ASSIGNED(A)" "CURRENT(C)" "|" "TURNEDIN(T)")))    
+       (org-todo-keywords-for-agenda '("TODO(t)" "IN-PROGRESS(i)" "WAITING(w)" "ASSIGNED(A)" "CURRENT(C)"))
+       (org-done-keywords-for-agenda '("DONE(d)" "CANCELED(c)" "TURNEDIN(T)"))
        (org-agenda-time-grid nil)
        (org-agenda-overriding-header "        󰞟    School Agenda   󰞟          ")
        (org-agenda-deadline-leaders '("Due:" "In %1d d." "%1d d. ago"))
@@ -149,8 +155,11 @@ The file is opened in the current buffer."
       ""
       ((org-agenda-files idemacs-agenda-file-list)
        (org-agenda-span 'day)
-       (org-todo-keywords-for-agenda '("TODO" "ASSIGNED" "CURRENT"))
-       (org-done-keywords-for-agenda '("DONE" "TURNED-IN"))
+       (org-todo-keywords
+	'((sequence "TODO(t)" "IN-PROGRESS(i)" "WAITING(w)" "|" "DONE(d)" "CANCELED(c)")
+	  (sequence "ASSIGNED(A)" "CURRENT(C)" "|" "TURNEDIN(T)")))
+       (org-todo-keywords-for-agenda '("TODO(t)" "IN-PROGRESS(i)" "WAITING(w)" "ASSIGNED(A)" "CURRENT(C)"))
+       (org-done-keywords-for-agenda '("DONE(d)" "CANCELED(c)" "TURNEDIN(T)"))
        (org-todo-keywords
 	'((sequence "TODO" "IN-PROGRESS" "WAITING" "|" "DONE" "CANCELED")
 	  (sequence "ASSIGNED" "CURRENT" "|" "TURNEDIN")))
@@ -182,19 +191,23 @@ The file is opened in the current buffer."
   "This function is used to view the daily quest."
   (interactive)
   (let ((org-agenda-custom-commands (list (idemacs/daily-quest))))
-    (org-agenda nil "d")))
+    (org-agenda nil "d")
+    (idemacs/faces-agenda-apply)))
 
 (defun idemacs/view-school-agenda ()
   "This function is used to view the school quest."
   (interactive)
   (let ((org-agenda-custom-commands (list (idemacs/school-quest))))
-    (org-agenda nil "s")))
+    (org-agenda nil "s")
+    (idemacs/faces-agenda-apply)))
 
 (defun idemacs/view-agenda ()
   "This function is used to view the idemacs agenda."
   (interactive)
   (let ((org-agenda-custom-commands (list (idemacs/agenda-view))))
-    (org-agenda nil "a")))
+    (org-agenda nil "a")
+    (idemacs/faces-agenda-apply)))
+
 
 ;; Org agenda capture templates
 (defun idemacs/capture-school-class ()
@@ -391,6 +404,7 @@ The file is opened in the current buffer."
   :set 'idemacs/agenda-set-tag-alist
   :group 'IDEmacs-Agenda)
 
+
 ;; Helper Functions
 (defun idemacs/agenda-link-file ()
   "Prompts the user if they would like to insert a link to a file.
@@ -519,6 +533,43 @@ the user to enter task to projects of the file."
     (setq choice (completing-read "Select project: " projects))
     (goto-char (point-min))
     (search-forward choice)))
+
+(defun idemacs/upadate-time-stamps ()
+  "This is going to be a long.
+So i need a function that will take the current org item in the agenda at my point and mark it as done.
+Not only does it need to mark it as done it needs to look through the org item and update the timestamps.
+There will be two timestamps and only one should be updated at a time.
+The time stamp that will be updated will be determined by the current time.
+If none of the timestamps match the current day then the oldest timestamp will be updated."
+  (interactive)
+  (let ((time-stamp '()) ; list to hold the time-stamps
+	(current-day (format-time-string "%Y-%m-%d" (current-time))) ; gets the current time
+	(heading nil))
+    ;; the command must be run from an agenda view.
+    (if (get-buffer "*Org Agenda*")
+	(with-current-buffer "*Org Agenda*"
+	  (org-agenda-goto) ; Jump to the heading in its org file
+	  (org-narrow-to-subtree) ; Narrow the view of the org-file to the heading
+	  (setq heading (org-get-heading t t t t)) ; Get the heading of the org item
+	  ;; Parse the narrowed buffer and store the time-stamps in the list
+	  (setq time-stamp (org-element-map (org-element-parse-buffer) 'timestamp
+			     (lambda (timestamp)
+			       (org-element-property :raw-value timestamp))))
+	  (dolist (ts time-stamp)
+	    ;;extract the data from the ts
+
+	    ;; If you update on the day of the event
+	    (if (string-match current-day ts)
+		;; This is the time-stamp that needs to be updated
+		(message "The time stamp matches the current day %s = %s" current-day ts)
+	      ;; If the update is on a different day.
+	      ;; update the oldest time stamp
+	      (message "time stamps do not match %s != %s" current-day ts))))
+      (message "Not in an org buffer"))
+    (message "%s Current Day:%s, Time Code:%s Time Stamp:%s" heading current-day (current-time) time-stamp)))
+  
+ 
+(define-key org-agenda-mode-map (kbd "RET") 'org-agenda-open-link)
 
 (provide 'IDEmacs-agenda)
 ;;; IDEmacs-agenda.el ends here

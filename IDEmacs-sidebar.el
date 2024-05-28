@@ -25,7 +25,7 @@
   :group 'IDEmacs-sidebar)
 
 (defcustom idemacs-sidebar-template
-  "* Schedules:\n [[sidebar:daily-agenda][Daily Quest]]\n [[sidebar:school-agenda][School Agenda]]\n\n* Config\n [[IDEmacs_file:~/.emacs.d/init.el][Init File]]\n"
+  ":KEYMAP:\n#+KEYMAP: q | (lambda () (interactive) (idemacs/sidebar-toggle))\n:END:\n\n* Schedules:\n** [[sidebar:idemacs-agenda][Overview]]\n** [[sidebar:daily-agenda][Daily Agenda]]\n** [[sidebar:school-agenda][School Agenda]]\n* Emacs-Config\n** [[IDEmacs_file:~/.emacs.d/init.el][init.el]]\n"
   "The template to be writen to the idemacs sidebar file on creation."
   :type 'string
   :group 'IDEmacs-sidebar)
@@ -35,7 +35,7 @@
   :type 'string
   :group 'IDEmacs-org-sidebar)
 
-(defcustom idemacs-sidebar-width 30
+(defcustom idemacs-sidebar-width 25
   "Width of the sidebar."
   :type 'integer
   :group 'IDEmacs-org-sidebar)
@@ -66,7 +66,6 @@
   :init-value nil
   (if idemacs-sidebar-mode
       (progn
-	(org-cycle '(2))
 	(setq buffer-read-only t)
 	;; Switch the keymap
 	(setq idemacs-sidebar-prev-local-keymap (current-local-map))
@@ -74,6 +73,7 @@
 	;; If we are in the sidebar assign "RET" to `org-open-at-point'
 	(if (string= (buffer-file-name) (expand-file-name idemacs-sidebar-file))
 	    (local-set-key (kbd "RET") #'org-open-at-point))
+	(idemacs/faces-sidebar-apply)
 	;; Updates the sidebar
 	(idemacs/sidebar-update))
     ;; Return to the previous keymap 
@@ -120,6 +120,7 @@
 			 (cons 'mode-line-format 'none)
 			 (cons 'header-line-format 'none)))))))
 	(select-window sidebar-window)
+	(org-global-cycle '(2))
 	(idemacs-sidebar-mode))
     (message (format " %s does not exisit." idemacs-sidebar-file))))
 
@@ -142,10 +143,6 @@ Bound by default to `M-I s'."
 	  (idemacs-sidebar-mode -1))
       (idemacs/sidebar-open))))
 
-(defun idemacs/sidebar-swap ()
-  "swaps in between the sidebar and other buffers.")
-
-
 (defun idemacs/sidebar-open-p ()
   "Check if the sidebar is open."
   (let ((buffer (get-file-buffer idemacs-sidebar-file)))
@@ -162,9 +159,11 @@ Bound by default to `M-I s'."
       (progn
 	(other-window 1)
 	(kill-buffer "*Org Agenda*")
-	(idemacs/view-daily-quest))
+	(idemacs/view-daily-quest)
+	(other-window 1))
     (other-window 1)
-    (idemacs/view-daily-quest)))
+    (idemacs/view-daily-quest)
+    (other-window 1)))
 
 (defun idemacs/sidebar-agenda-school-view ()
   "Change to the other window close it and open `IDEmacs/view-school-agenda'."
@@ -172,9 +171,23 @@ Bound by default to `M-I s'."
       (progn
 	(other-window 1)
 	(kill-buffer "*Org Agenda*")
-	(idemacs/view-school-agenda))
+	(idemacs/view-school-agenda)
+	(other-window 1))
     (other-window 1)
-    (idemacs/view-school-agenda)))
+    (idemacs/view-school-agenda)
+    (other-window 1)))
+
+(defun idemacs/sidebar-agenda-idemacs-view ()
+  "Change to the other window close it and open `IDEmacs/view-idemacs-agenda'."
+  (if (get-buffer "*Org Agenda*")
+      (progn
+	(other-window 1)
+	(kill-buffer "*Org Agenda*")
+	(idemacs/view-agenda)
+	(other-window 1))
+    (other-window 1)
+    (idemacs/view-agenda)
+    (other-window 1)))
 
 (defun idemacs/sidebar-format-capture-link ()
   "Creates the link to store in the sidebar with a capture template."
@@ -238,6 +251,8 @@ where QUERY is the org-agenda query, FILES is the list of files to search."
       (idemacs/sidebar-agenda-day-view))
      ((string-equal query "school-agenda")
       (idemacs/sidebar-agenda-school-view))
+     ((string-equal query "idemacs-agenda")
+      (idemacs/sidebar-agenda-idemacs-view))
      ((not fmt)
       (other-window 1)
       (idemacs/sidebar-show-matches query files description))
@@ -274,6 +289,22 @@ This will update the count if the link has a format string."
       (when (string= (org-element-property :type link) idemacs-sidebar-link-name)
 	(idemacs/sidebar-update-link link))))
   (redisplay t))
+
+(defun idemacs/sidebar-parse-keymap ()
+  (let ((map (make-sparse-keymap)))
+    (org-element-map (org-element-parse-buffer) 'keyword
+      (lambda (keyword)
+	(when (string= (org-element-property :key keyword) "KEYMAP")
+          (let* ((value (org-element-property :value keyword))
+		 (key   (string-trim (nth 0 (split-string value "|"))))
+		 (call  (string-trim (nth 1 (split-string value "|")))))
+            (define-key map
+	      (kbd key)
+	      `(lambda () (interactive) ,(car (read-from-string (format "(%s)" call)))))
+            (message "org-agenda-dashboard: binding %s to %s"
+		     key
+		     (format "(lambda () (interactive) (%s))" call))))))
+    map))
 ;; -------------------------------------------------------------------
 
 (defun idemacs/sidebar-clear-link (link)
@@ -306,21 +337,6 @@ This will update the count if the link has a format string."
       (if (bound-and-true-p idemacs-sidebar-mode)
 	  (idemacs/sidebar-update-all)))))
 
-(defun idemacs/sidebar-parse-keymap ()
-  (let ((map (make-sparse-keymap)))
-    (org-element-map (org-element-parse-buffer) 'keyword
-      (lambda (keyword)
-	(when (string= (org-element-property :key keyword) "KEYMAP")
-          (let* ((value (org-element-property :value keyword))
-		 (key   (string-trim (nth 0 (split-string value "|"))))
-		 (call  (string-trim (nth 1 (split-string value "|")))))
-            (define-key map
-	      (kbd key)
-	      `(lambda () (interactive) ,(car (read-from-string (format "(%s)" call)))))
-            (message "org-agenda-dashboard: binding %s to %s"
-		     key
-		     (format "(lambda () (interactive) (%s))" call))))))
-    map))
 
 (provide 'IDEmacs-sidebar)
 ;;; IDEmacs-sidebar.el ends here

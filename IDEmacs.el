@@ -138,10 +138,9 @@
       (setq idemacs-mode nil)
       )))
 
-(defun in-capture-buffer-p ()
-  "Check if we're in a capture buffer."
-  (string-prefix-p "CAPTURE" (buffer-name)))
-	    
+(add-hook 'after-capture-finalize-hook 'idemacs/helper-kill-calendar)
+
+
 (define-key global-map [f2] 'idemacs-mode)
 
 (provide 'IDEmacs)
