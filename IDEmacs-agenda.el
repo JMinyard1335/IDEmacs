@@ -534,42 +534,52 @@ the user to enter task to projects of the file."
     (goto-char (point-min))
     (search-forward choice)))
 
-(defun idemacs/upadate-time-stamps ()
-  "This is going to be a long.
-So i need a function that will take the current org item in the agenda at my point and mark it as done.
-Not only does it need to mark it as done it needs to look through the org item and update the timestamps.
-There will be two timestamps and only one should be updated at a time.
-The time stamp that will be updated will be determined by the current time.
-If none of the timestamps match the current day then the oldest timestamp will be updated."
+(defun idemacs/agenda-complete-class ()
+  "Marks a class as done and moves that class to the next repeat."
   (interactive)
-  (let ((time-stamp '()) ; list to hold the time-stamps
-	(current-day (format-time-string "%Y-%m-%d" (current-time))) ; gets the current time
-	(heading nil))
-    ;; the command must be run from an agenda view.
-    (if (get-buffer "*Org Agenda*")
-	(with-current-buffer "*Org Agenda*"
-	  (org-agenda-goto) ; Jump to the heading in its org file
-	  (org-narrow-to-subtree) ; Narrow the view of the org-file to the heading
-	  (setq heading (org-get-heading t t t t)) ; Get the heading of the org item
-	  ;; Parse the narrowed buffer and store the time-stamps in the list
-	  (setq time-stamp (org-element-map (org-element-parse-buffer) 'timestamp
-			     (lambda (timestamp)
-			       (org-element-property :raw-value timestamp))))
-	  (dolist (ts time-stamp)
-	    ;;extract the data from the ts
+  (if (get-buffer "*Org Agenda*")
+      (with-current-buffer "*Org Agenda*"
+	(org-agenda-goto)
+	(org-narrow-to-subtree)
+	(let ((timestamps (idemacs/agenda-extract-timestamps)))
+	  (dolist (ts timestamps)
+	    (when (idemacs/helper-date-before-today (nth 0 ts))
+	      (let ((old-time (nth 0 ts))
+		    (begin (nth 1 ts))
+		    (end (nth 2 ts)))
+		(message "timestamp info: %s" ts)
+		(setq new-time (idemacs/update-time-stamp old-time))
+		(delete-region begin end)
+		(goto-char begin)
+		(insert new-time)))))
+	(save-buffer)
+	(kill-buffer))))
 
-	    ;; If you update on the day of the event
-	    (if (string-match current-day ts)
-		;; This is the time-stamp that needs to be updated
-		(message "The time stamp matches the current day %s = %s" current-day ts)
-	      ;; If the update is on a different day.
-	      ;; update the oldest time stamp
-	      (message "time stamps do not match %s != %s" current-day ts))))
-      (message "Not in an org buffer"))
-    (message "%s Current Day:%s, Time Code:%s Time Stamp:%s" heading current-day (current-time) time-stamp)))
+(defun idemacs/update-time-stamp (timestamp)
+  "Moves the time stamp foward by one week"
+  (let* ((parsed-timestamp (org-read-date nil t timestamp))
+	 (new-date (time-add parsed-timestamp (* 7 24 60 60))))
+    (format-time-string "<%Y-%m-%d %a %H:%M-%H:%M +1w>" new-date)))
   
- 
+(defun idemacs/agenda-extract-timestamps ()
+  (let ((timestamps))
+    (org-element-map (org-element-parse-buffer) 'timestamp
+      (lambda (ts)
+	(let* ((begin (org-element-property :begin ts))
+	       (end (org-element-property :end ts))
+	       (timestamp (buffer-substring-no-properties begin end)))
+	  (push (list timestamp begin end) timestamps))))
+    timestamps))
+
+(defun idemacs/helper-date-before-today (timestamp)
+  "This function takes in (TIMESTAMP) and returns t if the date is before today."
+  (interactive)
+  (let ((today (format-time-string "%Y-%m-%d" (current-time)))
+	(date (substring timestamp 1 11)))
+    (not (string-greaterp date today))))
+
 (define-key org-agenda-mode-map (kbd "RET") 'org-agenda-open-link)
+(define-key org-agenda-mode-map (kbd "d") 'idemacs/agenda-complete-class)
 
 (provide 'IDEmacs-agenda)
 ;;; IDEmacs-agenda.el ends here
