@@ -21,6 +21,7 @@
   :hook
   (org-mode . org-bullets-mode)
   (org-mode . visual-line-mode)
+  (org-agenda-mode . idemacs-org-agenda-hook)
   :config
   (add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
   (setq org-agenda-window-setup 'current-window)
@@ -32,9 +33,9 @@
   (setq org-todo-keywords-for-agenda '("TODO(t)" "IN-PROGRESS(i)" "WAITING(w)" "ASSIGNED(A)" "CURRENT(C)"))
   (setq org-done-keywords-for-agenda '("DONE(d)" "CANCELED(c)" "TURNEDIN(T)"))
   (setq org-deadline-warning-days 7)
-  (setq org-popup-calendar-for-date-prompt t)
   (setq org-agenda-hide-tags-regexp ".*")
   (setq org-adapt-indentation t)
+  (setq org-agenda-tags-column 40)
   (setq org-hide-drawer-startup t))
 (use-package olivetti
   :ensure t
@@ -85,7 +86,6 @@ The file is opened in the current buffer."
 	(message "%s Not created." file))
     (find-file file)))
 
-
 ;; Org agenda views
 (defun idemacs/daily-quest ()
   "Hold the daily quest view for the agenda."
@@ -134,6 +134,7 @@ The file is opened in the current buffer."
        (org-agenda-time-grid nil)
        (org-agenda-overriding-header "        󰞟    School Agenda   󰞟          ")
        (org-agenda-deadline-leaders '("Due:" "In %1d d." "%1d d. ago"))
+       (org-agenda-hide-tags-regexp nil)
        (org-agenda-prefix-format '((agenda . "  %i %s %t ")))
        (org-super-agenda-groups
 	'((:name " 󱉟  Projects  󱉟  "
@@ -160,9 +161,6 @@ The file is opened in the current buffer."
 	  (sequence "ASSIGNED(A)" "CURRENT(C)" "|" "TURNEDIN(T)")))
        (org-todo-keywords-for-agenda '("TODO(t)" "IN-PROGRESS(i)" "WAITING(w)" "ASSIGNED(A)" "CURRENT(C)"))
        (org-done-keywords-for-agenda '("DONE(d)" "CANCELED(c)" "TURNEDIN(T)"))
-       (org-todo-keywords
-	'((sequence "TODO" "IN-PROGRESS" "WAITING" "|" "DONE" "CANCELED")
-	  (sequence "ASSIGNED" "CURRENT" "|" "TURNEDIN")))
        (org-agenda-time-grid nil)
        (org-agenda-overriding-header "          IDEmacs Agenda         ")
        (org-agenda-prefix-format '((agenda . "  %i %s %t ")))
@@ -351,7 +349,7 @@ The file is opened in the current buffer."
       :headline "Reminders"
       :template
       ("* TODO %^{Reminder} :personal:reminders:%^g"
-       "DEADLINE: %(idemacs/agenda-set-deadline"))
+       "DEADLINE: %(idemacs/agenda-set-deadline)"))
      ("Goals" :keys "g"
       :headline "Goals"
       :template
@@ -573,10 +571,12 @@ the user to enter task to projects of the file."
 
 (defun idemacs/helper-date-before-today (timestamp)
   "This function takes in (TIMESTAMP) and returns t if the date is before today."
-  (interactive)
   (let ((today (format-time-string "%Y-%m-%d" (current-time)))
 	(date (substring timestamp 1 11)))
     (not (string-greaterp date today))))
+
+(defun idemacs-org-agenda-hook ()
+  (visual-line-mode -1))
 
 (define-key org-agenda-mode-map (kbd "RET") 'org-agenda-open-link)
 (define-key org-agenda-mode-map (kbd "d") 'idemacs/agenda-complete-class)

@@ -139,9 +139,19 @@
   "Face for tasks with a distant deadline in the agenda"
   :group 'IDEmacs-Agenda)
 
+(defface idemacs-scheduled
+  '((t :foreground "#ebd2b4" :bold t :box (:line-width 2)))
+  ""
+  :group 'IDEmacs-Agenda)
+
 (defface idemacs-calender-event
   '((t :foreground "#ebd2b4" :box (:line-width 2)))
   "Face for calender events in the agenda"
+  :group 'IDEmacs-Agenda)
+
+(defface idemacs-tags
+  '((t :foreground "#ebd2b4" :box (:line-width 2) :slant italic))
+  "Face for tags in the agenda views"
   :group 'IDEmacs-Agenda)
 
 (defun idemacs/faces-sidebar-apply ()
@@ -172,6 +182,8 @@
   (face-remap-add-relative 'org-upcoming-deadline 'idemacs-upcoming-deadline)
   (face-remap-add-relative 'org-upcoming-distant-deadline 'idemacs-distant-deadline)
   (face-remap-add-relative 'org-agenda-calendar-event 'idemacs-calender-event)
+  (face-remap-add-relative 'org-scheduled 'idemacs-scheduled)
+  (face-remap-add-relative 'org-modern-tag 'idemacs-tags)
 )
 
 (provide 'IDEmacs-faces)

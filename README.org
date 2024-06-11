@@ -1,9 +1,11 @@
 #+TITLE: IDEmacs
 #+AUTHOR: Jachin Minyard
+#+options: toc:nil tags:nil todo:nil
 
-* Introduction
+* TODO Introduction
   
-* Installation
+* DONE Installation
+  CLOSED: [2024-05-31 Fri 14:53]
   Download the files into a directory of your chosing. After that add the following code to your configuration file:
   #+begin_src elisp
     (require 'package)
@@ -26,47 +28,109 @@
   This is the bare minimum needed to get the package set up. DONT FORGET TO SET THE CORRECT LOAD-PATH! The load path should be the path to the directory that contains the IDEmacs files. The idemacs/personal-set-path, idemacs/school-set-path, idemacs/home-set-path, idemacs/refile-set-path, and idemacs/sidebar-set-path functions are used to set and create the org files. The default paths can be replaced with a path of your choosing.
 
   To access idemacs-mode type M-x RET idemacs-mode. Or use the hotkey <F2>.
-     
-* IDEmacs
-  This is the main package and is in charge of setting up the IDEmacs-mode. This mode is a minor mode that wraps the other packages. While this package is not required to use the features found in the other packages. it helps link there functions together into a more cohesive configuration. idemacs-mode defines a keymap that can be used to set up Sudo global keybinds as idemacs-mode is a global mode and work in all buffers once it is activated.
+  
+* DONE IDEmacs
+  CLOSED: [2024-05-30 Thu 16:22]
+  This is the main package and is in charge of setting up the IDEmacs-mode. This mode is a minor mode that wraps the other packages. While this package is not required to use the features found in the other packages. it helps link there functions together into a more cohesive configuration. idemacs-mode defines a keymap that can be used to set up sudo global keybinds as idemacs-mode is a global mode and work in all buffers once it is activated.
 ** Variables
-*** IDEmacs-theme
+*** DONE IDEmacs-theme
+    CLOSED: [2024-05-30 Thu 15:51]
     This is the theme that is applied when idemas-mode is run.
     #+begin_src emacs-lisp
       (setq IDEmacs-theme 'wombat)
     #+end_src    
 
-*** IDEmacs-font-size
+*** DONE IDEmacs-font-name
+    CLOSED: [2024-05-30 Thu 15:51]
+    The name of the font used when you enter idemacs-mode. I would recomend that you use a nerd font so that all the icons show up properly.
+    #+begin_src emacs-lisp
+      (setq idemacs-font-name "Victor Mono")
+    #+end_src 
+
+*** DONE IDEmacs-font-size
+    CLOSED: [2024-05-30 Thu 15:54]
     This is the font size that is applied when idemas-mode is run.
     #+begin_src emacs-lisp
       (setq IDEmacs-font-size 120)
     #+end_src
 
-*** Idemacs-line-numbers
+*** DONE Idemacs-line-numbers
+    CLOSED: [2024-05-30 Thu 15:54]
     If t then line numbers are added to programing modes inside of IDEmacs.
     #+begin_src emacs-lisp
       (setq Idemacs-line-numbers t)
     #+end_src
 
-*** IDEmacs-sidebar-on-startup
+*** DONE IDEmacs-menu-bar
+    CLOSED: [2024-05-30 Thu 16:09]
+    This is a variable to take over for the built in menu bar. You can set this to disable or enable the menu bar just in idemacs-mode. Set the value to 1 to turn on the menu bar -1 to turn it off.
+    #+begin_src emacs-lisp
+      (setq IDEmacs-menu-bar -1)
+    #+end_src
+
+*** DONE IDEmacs-tool-bar
+    CLOSED: [2024-05-30 Thu 16:09]
+    This is a variable to take over for the built in tool bar. You can set this to disable or enable the tool bar just in idemacs-mode. Set the value to 1 to turn on the tool bar -1 to turn it off.
+    #+begin_src emacs-lisp
+      (setq IDEmacs-tool-bar -1)
+    #+end_src
+    
+*** DONE IDEmacs-scroll-bar
+    CLOSED: [2024-05-30 Thu 16:10]
+    This is a variable to take over for the built in scroll bar. You can set this to disable or enable the scroll bar just in idemacs-mode. Set the value to 1 to turn on the scroll bar -1 to turn it off.
+    #+begin_src emacs-lisp
+      (setq IDEmacs-scroll-bar -1)
+    #+end_src
+    
+*** DONE IDEmacs-tab-bar
+    CLOSED: [2024-05-30 Thu 16:12]
+    This is a variable to take over for the built in tab bar. You can set this to disable or enable the tab bar just in idemacs-mode. Set the value to 1 to turn on the tab bar -1 to turn it off.
+    #+begin_src emacs-lisp
+      (setq IDEmacs-tab-bar -1)
+   #+end_src
+      
+*** DONE IDEmacs-display-battery
+    CLOSED: [2024-05-30 Thu 16:21]
+    This is a variable that will allow the battery status to be displayed on the mode line. if your system is hard wired and does not have a battery turn this off.
+    #+begin_src emacs-lisp
+      (setq IDEmacs-display-battery -1)
+    #+end_src
+
+*** DONE IDEmacs-display-time
+    CLOSED: [2024-05-30 Thu 16:22]
+    This variable will display the time on the mode line if its value is set to 1.
+    #+begin_src emacs-lisp
+      (setq IDEmacs-display-time 1)
+    #+end_src  
+
+*** DONE IDEmacs-sidebar-on-startup
+    CLOSED: [2024-05-30 Thu 15:54]
     If t then the sidebar is loaded when idemacs-mode is run.
     #+begin_src emacs-lisp
       (setq IDEmacs-sidebar-on-startup t)
     #+end_src
 
-*** IDEmacs-agenda-on-startup
+*** DONE IDEmacs-agenda-on-startup
+    CLOSED: [2024-05-30 Thu 15:54]
     If t then the agenda is loaded when idemacs-mode is run.
     #+begin_src emacs-lisp
       (setq IDEmacs-agenda-on-startup t)
     #+end_src
-
-*** IDEmacs-mode-map
-    This is the keymap that is used in idemacs-mode.
-    #+begin_src emacs-lisp
-      (define-key IDEmacs-mode-map (kbd "C-c C-s") 'idemacs/sidebar-open)
-    #+end_src
     
-* IDEmacs Orgfiles
+* DONE IDEmacs User
+  CLOSED: [2024-05-31 Fri 15:01]
+** DONE Variables
+   CLOSED: [2024-05-31 Fri 14:58]
+*** DONE idemacs-user-info
+    CLOSED: [2024-05-31 Fri 14:58]
+    This holds the users info such as name, age, email, and job you can set just your name or all the values as you wish. It is best to set this with the function called idemacs/user-set
+    
+** DONE Functions
+   CLOSED: [2024-05-31 Fri 15:01]
+*** idemacs/user-set
+    This function will set the values for the idemacs-user-info. This function requirews the name of the user the other arguments are optional.
+* DONE IDEmacs Orgfiles
+  CLOSED: [2024-05-30 Thu 15:02]
   IDEmacs-orgfiles.el is a package that holds some custom variables to help with the creation of org files. The main function is the setting and the reformating of these org files. The org files defined by default are used in the IDEmacs-mode org-capture-template setup. This file contains several groups one for each of the default org files. This is to make it eaiser to customize the groups through the customize-group interface.
 ** Variables:
 *** idemacs-personal-path
@@ -109,7 +173,7 @@
     #+end_src
 
 *** idemacs-agenda-file-list
-
+    
 ** Functions:
 *** idemacs/personal-set-path
     The idemacs/personal-set-path function is used to set the path to the personal org file. Use this over the standard setq. This function will create the file if it does not exisit and write the template to the file.
@@ -146,10 +210,11 @@
 
 *** idemacs/refile-reformat-file
     The idemacs/refile-reformat-file function is used to reformat the refile org file. This function will write the template to the file.
-* IDEmacs Agenda
+* DONE IDEmacs Agenda
+  CLOSED: [2024-05-31 Fri 14:58]
   IDEmacs-agenda.el is a package that customizes the org-agenda to have different views built to work with the org files created by IDEmacs-orgfiles.el. The main function is the creation of the different views that are used in the IDEmacs-mode, and the capturing of information to the org files.  
 ** Variables
-*** idemacs--agenda-tag-list
+*** idemacs-agenda-tag-list
     This is a list of tags that are added to the list of tags that are used in the agenda views. It can be set in the following way:
     #+begin_src emacs-lisp
 	    (setq idemacs--agenda-tag-list '(("name" . ?n)
@@ -168,7 +233,10 @@
 *** idemacs/capture-sidebar-entries
     This function will capture a sidebar entry and add it to the sidebar org file.
     
-* IDEmacs Sidebar
+*** DONE idemacs/agenda-complete-class
+    CLOSED: [2024-05-31 Fri 14:58]
+    This function is used to complete a class entry in the org agenda. The class entries differ from regualr todo items as they have multiple timestamps for each day of the week there is a class. This function will only update timestamps that are <= the current date by one week all other timestamps will be left alone. 
+* TODO IDEmacs Sidebar
   The emacs side bar is a window that holds links to different files and agenda views. it acts as a mini planner that can be used to navigate to different parts of the users workflow. At the current state the user is responsiable for populating the org file with links tho I have provided a few links to get the user started.
 ** Variables
 *** idemacs-sidebar-file
@@ -199,7 +267,7 @@
     #+begin_src emacs-lisp
       (setq idemacs-sidebar-lighter " Sidebar")
     #+end_src
-
+    
 ** Functions
 *** idemacs/sidebar-set-path
     The idemacs/sidebar-set-path function is used to set the path to the sidebar org file. Use this over the standard setq. This function will create the file if it does not exisit and write the template to the file.
